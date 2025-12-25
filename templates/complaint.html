@@ -1,25 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Complaint</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-
-<header>Complaint Registration</header>
-
-<div class="form-container">
-    <form action="/submit_complaint" method="post">
-
-        <input type="text" name="name" placeholder="Student Name" required>
-
-        <input type="text" name="room_no" placeholder="Room Number" required>
-
-        <textarea name="complaint" placeholder="Enter your complaint" required></textarea>
-
-        <button type="submit">Submit Complaint</button>
-    </form>
+<div class="container">
+<h2>Complaint Form</h2>
+<form method="post">
+<input name="name" placeholder="Name" required>
+<input name="room" placeholder="Room No" required>
+<textarea name="complaint" placeholder="Complaint" required></textarea>
+<button>Submit</button>
+</form>
 </div>
-
 </body>
 </html>

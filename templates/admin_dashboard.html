@@ -1,56 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+<div class="container">
+<h2>Admin Dashboard</h2>
+<a href="/logout">Logout</a>
 
-<header>Admin Dashboard</header>
+<h3>Leave Applications</h3>
+<table class="admin-table">
+<tr>
+<th>ID</th><th>Name</th><th>Room</th><th>Reason</th><th>From</th><th>To</th>
+</tr>
+{% for l in leaves %}
+<tr>
+<td>{{l[0]}}</td><td>{{l[1]}}</td><td>{{l[2]}}</td>
+<td>{{l[3]}}</td><td>{{l[4]}}</td><td>{{l[5]}}</td>
+</tr>
+{% endfor %}
+</table>
 
-<div class="logout">
-    <a href="/admin/logout">Logout</a>
+<h3>Complaints</h3>
+<table class="admin-table">
+<tr>
+<th>ID</th><th>Name</th><th>Room</th><th>Complaint</th>
+</tr>
+{% for c in complaints %}
+<tr>
+<td>{{c[0]}}</td><td>{{c[1]}}</td><td>{{c[2]}}</td><td>{{c[3]}}</td>
+</tr>
+{% endfor %}
+</table>
+
 </div>
-
-<h2>Leave Applications</h2>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Room</th>
-        <th>From</th>
-        <th>To</th>
-        <th>Reason</th>
-    </tr>
-    {% for l in leaves %}
-    <tr>
-        <td>{{ l[0] }}</td>
-        <td>{{ l[1] }}</td>
-        <td>{{ l[2] }}</td>
-        <td>{{ l[3] }}</td>
-        <td>{{ l[4] }}</td>
-        <td>{{ l[5] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<h2>Complaints</h2>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Room</th>
-        <th>Complaint</th>
-    </tr>
-    {% for c in complaints %}
-    <tr>
-        <td>{{ c[0] }}</td>
-        <td>{{ c[1] }}</td>
-        <td>{{ c[2] }}</td>
-        <td>{{ c[3] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-
 </body>
 </html>
