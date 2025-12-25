@@ -2,58 +2,35 @@
 <html>
 <head>
     <title>Hostel Chatbot</title>
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #f2f2f2;
-        }
-        .chatbox {
-            width: 400px;
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        #chatlog {
-            height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        input {
-            width: 75%;
-            padding: 8px;
-        }
-        button {
-            padding: 8px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
-    <div class="chatbox">
-        <h2>College Hostel Chatbot</h2>
-        <div id="chatlog"></div>
 
-        <input type="text" id="userInput" placeholder="Type your message..." />
-        <button onclick="sendMessage()">Send</button>
-    </div>
+<header>College Hostel Chatbot</header>
+
+<div class="container">
+    <div class="chat-box" id="chat"></div>
+
+    <input type="text" id="msg" placeholder="Type your message..." />
+    <button onclick="sendMsg()">Send</button>
+</div>
 
 <script>
-function sendMessage() {
-    let userText = document.getElementById("userInput").value;
-    let chatlog = document.getElementById("chatlog");
+function sendMsg() {
+    let msg = document.getElementById("msg").value;
+    if (msg === "") return;
 
-    chatlog.innerHTML += "<p><b>You:</b> " + userText + "</p>";
+    let chat = document.getElementById("chat");
+    chat.innerHTML += `<div class="user">${msg}</div>`;
 
-    fetch("/get?msg=" + userText)
-        .then(response => response.text())
+    fetch(`/get?msg=${msg}`)
+        .then(res => res.text())
         .then(data => {
-            chatlog.innerHTML += "<p><b>Bot:</b> " + data + "</p>";
+            chat.innerHTML += `<div class="bot">${data}</div>`;
+            chat.scrollTop = chat.scrollHeight;
         });
 
-    document.getElementById("userInput").value = "";
+    document.getElementById("msg").value = "";
 }
 </script>
 

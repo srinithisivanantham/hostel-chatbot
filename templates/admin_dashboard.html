@@ -2,25 +2,24 @@
 <html>
 <head>
     <title>Admin Dashboard</title>
-    <style>
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid black; padding: 8px; }
-        th { background-color: #f2f2f2; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<h2>Admin Dashboard</h2>
-<a href="/admin/logout">Logout</a>
+<header>Admin Dashboard</header>
 
-<h3>Leave Applications</h3>
+<div class="logout">
+    <a href="/admin/logout">Logout</a>
+</div>
+
+<h2>Leave Applications</h2>
 <table>
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Room No</th>
-        <th>From Date</th>
-        <th>To Date</th>
+        <th>Room</th>
+        <th>From</th>
+        <th>To</th>
         <th>Reason</th>
     </tr>
     {% for l in leaves %}
@@ -35,20 +34,20 @@
     {% endfor %}
 </table>
 
-<h3>Complaints</h3>
+<h2>Complaints</h2>
 <table>
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Room No</th>
+        <th>Room</th>
         <th>Complaint</th>
     </tr>
     {% for c in complaints %}
     <tr>
-        <td>{{ c[0] }}</td>   <!-- id -->
-        <td>{{ c[1] }}</td>   <!-- name -->
-        <td>{{ c[2] }}</td>   <!-- room_no -->
-        <td>{{ c[3] }}</td>   <!-- complaint -->
+        <td>{{ c[0] }}</td>
+        <td>{{ c[1] }}</td>
+        <td>{{ c[2] }}</td>
+        <td>{{ c[3] }}</td>
     </tr>
     {% endfor %}
 </table>
