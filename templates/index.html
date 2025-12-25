@@ -2,14 +2,24 @@
 <html>
 <head>
     <title>Hostel Chatbot</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<div class="container">
-    <h2>Hostel Chatbot</h2>
-    <a href="/complaint">Register Complaint</a>
-    <a href="/leave">Apply Leave</a>
-    <a href="/admin">Admin Login</a>
-</div>
+    <h2>College Hostel Chatbot</h2>
+    <div id="chat"></div>
+    <input id="msg" placeholder="Type message">
+    <button onclick="send()">Send</button>
+
+    <script>
+        function send() {
+            let m = document.getElementById("msg").value;
+            document.getElementById("chat").innerHTML += "<p>You: " + m + "</p>";
+            fetch("/get?msg=" + m)
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("chat").innerHTML += "<p>Bot: " + data + "</p>";
+            });
+            document.getElementById("msg").value = "";
+        }
+    </script>
 </body>
 </html>

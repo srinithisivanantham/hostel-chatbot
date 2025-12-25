@@ -1,20 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Leave</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+<head><title>Leave Form</title></head>
 <body>
-<div class="container">
-    <h2>Leave Application</h2>
-    <form method="post">
-        <input name="name" placeholder="Name" required>
-        <input name="room" placeholder="Room No" required>
-        <input name="reason" placeholder="Reason" required>
-        <input type="date" name="from_date" required>
-        <input type="date" name="to_date" required>
-        <button type="submit">Apply</button>
-    </form>
-</div>
+<h2>Leave Application</h2>
+<form action="/submit_leave" method="post">
+    <input name="name" placeholder="Name" required><br><br>
+    <input name="room_no" placeholder="Room No" required><br><br>
+    <textarea name="reason" placeholder="Reason" required></textarea><br><br>
+    <button type="submit">Submit</button>
+</form>
 </body>
 </html>

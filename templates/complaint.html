@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Complaint</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+<head><title>Complaint Form</title></head>
 <body>
-<div class="container">
-    <h2>Complaint Form</h2>
-    <form method="post">
-        <input name="name" placeholder="Name" required>
-        <input name="room" placeholder="Room No" required>
-        <textarea name="complaint" placeholder="Complaint" required></textarea>
-        <button type="submit">Submit</button>
-    </form>
-</div>
+<h2>Complaint Registration</h2>
+<form action="/submit_complaint" method="post">
+    <input name="name" placeholder="Name" required><br><br>
+    <input name="room_no" placeholder="Room No" required><br><br>
+    <textarea name="complaint" placeholder="Complaint" required></textarea><br><br>
+    <button type="submit">Submit</button>
+</form>
 </body>
 </html>
