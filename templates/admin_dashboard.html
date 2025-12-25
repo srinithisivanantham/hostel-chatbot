@@ -1,33 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        a.logout {
+            float: right;
+            text-decoration: none;
+            background: #e74c3c;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        a.logout:hover {
+            background: #c0392b;
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #34495e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;   /* IMPORTANT */
+            background: white;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;     /* COLUMN LINES */
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+    </style>
 </head>
+
 <body>
-<div class="container">
-<h2>Admin Dashboard</h2>
-<a href="/logout">Logout</a>
 
-<h3>Leave Applications</h3>
-<table>
-<tr><th>ID</th><th>Name</th><th>Reason</th><th>From</th><th>To</th></tr>
-{% for l in leaves %}
-<tr>
-<td>{{l[0]}}</td><td>{{l[1]}}</td><td>{{l[2]}}</td><td>{{l[3]}}</td><td>{{l[4]}}</td>
-</tr>
-{% endfor %}
-</table>
+    <a href="/admin/logout" class="logout">Logout</a>
 
-<h3>Complaints</h3>
-<table>
-<tr><th>ID</th><th>Name</th><th>Complaint</th></tr>
-{% for c in complaints %}
-<tr>
-<td>{{c[0]}}</td><td>{{c[1]}}</td><td>{{c[2]}}</td>
-</tr>
-{% endfor %}
-</table>
-</div>
+    <h1>Admin Dashboard</h1>
+
+    <!-- LEAVE APPLICATIONS -->
+    <h2>Leave Applications</h2>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Room No</th>
+            <th>Reason</th>
+            <th>From Date</th>
+            <th>To Date</th>
+        </tr>
+
+        {% for leave in leaves %}
+        <tr>
+            <td>{{ leave[0] }}</td>
+            <td>{{ leave[1] }}</td>
+            <td>{{ leave[2] }}</td>
+            <td>{{ leave[3] }}</td>
+            <td>{{ leave[4] }}</td>
+            <td>{{ leave[5] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- COMPLAINTS -->
+    <h2>Complaints</h2>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Room No</th>
+            <th>Complaint</th>
+        </tr>
+
+        {% for c in complaints %}
+        <tr>
+            <td>{{ c[0] }}</td>
+            <td>{{ c[1] }}</td>
+            <td>{{ c[2] }}</td>
+            <td>{{ c[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
 </body>
 </html>
