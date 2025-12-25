@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/static/style.css">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <div class="container">
@@ -9,30 +10,24 @@
 <a href="/logout">Logout</a>
 
 <h3>Leave Applications</h3>
-<table class="admin-table">
-<tr>
-<th>ID</th><th>Name</th><th>Room</th><th>Reason</th><th>From</th><th>To</th>
-</tr>
+<table>
+<tr><th>ID</th><th>Name</th><th>Reason</th><th>From</th><th>To</th></tr>
 {% for l in leaves %}
 <tr>
-<td>{{l[0]}}</td><td>{{l[1]}}</td><td>{{l[2]}}</td>
-<td>{{l[3]}}</td><td>{{l[4]}}</td><td>{{l[5]}}</td>
+<td>{{l[0]}}</td><td>{{l[1]}}</td><td>{{l[2]}}</td><td>{{l[3]}}</td><td>{{l[4]}}</td>
 </tr>
 {% endfor %}
 </table>
 
 <h3>Complaints</h3>
-<table class="admin-table">
-<tr>
-<th>ID</th><th>Name</th><th>Room</th><th>Complaint</th>
-</tr>
+<table>
+<tr><th>ID</th><th>Name</th><th>Complaint</th></tr>
 {% for c in complaints %}
 <tr>
-<td>{{c[0]}}</td><td>{{c[1]}}</td><td>{{c[2]}}</td><td>{{c[3]}}</td>
+<td>{{c[0]}}</td><td>{{c[1]}}</td><td>{{c[2]}}</td>
 </tr>
 {% endfor %}
 </table>
-
 </div>
 </body>
 </html>

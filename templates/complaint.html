@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Complaint</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <div class="container">
 <h2>Complaint Form</h2>
-<form method="post">
-<input name="name" placeholder="Name" required>
-<input name="room" placeholder="Room No" required>
-<textarea name="complaint" placeholder="Complaint" required></textarea>
-<button>Submit</button>
+<form method="post" action="/submit_complaint">
+    <input name="name" placeholder="Name" required>
+    <input name="room" placeholder="Room No" required>
+    <textarea name="complaint" placeholder="Complaint" required></textarea>
+    <button type="submit">Submit</button>
 </form>
 </div>
 </body>

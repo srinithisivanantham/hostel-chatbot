@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Leave Form</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <div class="container">
 <h2>Leave Application</h2>
-<form method="post">
-<input name="name" placeholder="Name" required>
-<input name="room" placeholder="Room No" required>
-<input name="from_date" type="date" required>
-<input name="to_date" type="date" required>
-<textarea name="reason" placeholder="Reason" required></textarea>
-<button>Submit</button>
+<form method="post" action="/submit_leave">
+    <input name="name" placeholder="Name" required>
+    <input name="room" placeholder="Room No" required>
+    <input name="reason" placeholder="Reason" required>
+    <input type="date" name="from_date" required>
+    <input type="date" name="to_date" required>
+    <button type="submit">Submit</button>
 </form>
 </div>
 </body>
