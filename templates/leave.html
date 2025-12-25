@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head><title>Leave Form</title></head>
+<head>
+    <title>Leave Application</title>
+</head>
 <body>
-<h2>Leave Application</h2>
-<form action="/submit_leave" method="post">
-    <input name="name" placeholder="Name" required><br><br>
-    <input name="room_no" placeholder="Room No" required><br><br>
-    <textarea name="reason" placeholder="Reason" required></textarea><br><br>
-    <button type="submit">Submit</button>
-</form>
+    <h2>Leave Application Form</h2>
+
+    <form action="/submit_leave" method="post">
+        <label>Name:</label><br>
+        <input type="text" name="name" required><br><br>
+
+        <label>Room Number:</label><br>
+        <input type="text" name="room_no" required><br><br>
+
+        <label>From Date:</label><br>
+        <input type="date" name="from_date" required><br><br>
+
+        <label>To Date:</label><br>
+        <input type="date" name="to_date" required><br><br>
+
+        <label>Reason for Leave:</label><br>
+        <textarea name="reason" required></textarea><br><br>
+
+        <button type="submit">Submit Leave</button>
+    </form>
+
+    <br>
+    <a href="/">Back to Home</a>
 </body>
 </html>

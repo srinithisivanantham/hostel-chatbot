@@ -4,6 +4,8 @@
     <th>ID</th>
     <th>Name</th>
     <th>Room No</th>
+    <th>From Date</th>
+    <th>To Date</th>
     <th>Reason</th>
   </tr>
   {% for leave in leaves %}
@@ -12,6 +14,8 @@
     <td>{{ leave[1] }}</td>
     <td>{{ leave[2] }}</td>
     <td>{{ leave[3] }}</td>
+    <td>{{ leave[4] }}</td>
+    <td>{{ leave[5] }}</td>
   </tr>
   {% endfor %}
 </table>
