@@ -5,34 +5,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
-<header>College Hostel Chatbot</header>
-
 <div class="container">
-    <div class="chat-box" id="chat"></div>
-
-    <input type="text" id="msg" placeholder="Type your message..." />
-    <button onclick="sendMsg()">Send</button>
+    <h2>Hostel Chatbot</h2>
+    <a href="/complaint">Register Complaint</a>
+    <a href="/leave">Apply Leave</a>
+    <a href="/admin">Admin Login</a>
 </div>
-
-<script>
-function sendMsg() {
-    let msg = document.getElementById("msg").value;
-    if (msg === "") return;
-
-    let chat = document.getElementById("chat");
-    chat.innerHTML += `<div class="user">${msg}</div>`;
-
-    fetch(`/get?msg=${msg}`)
-        .then(res => res.text())
-        .then(data => {
-            chat.innerHTML += `<div class="bot">${data}</div>`;
-            chat.scrollTop = chat.scrollHeight;
-        });
-
-    document.getElementById("msg").value = "";
-}
-</script>
-
 </body>
 </html>

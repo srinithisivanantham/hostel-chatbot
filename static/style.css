@@ -1,65 +1,63 @@
 body {
-    margin: 0;
     font-family: Arial, sans-serif;
-    background: #f4f6f9;
-}
-
-header {
-    background: #2c3e50;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-size: 22px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-    width: 90%;
-    max-width: 700px;
-    margin: 30px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 420px;
+    background: #fff;
+    margin: 60px auto;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+h2 {
+    text-align: center;
+    color: #4a4a4a;
 }
 
 input, textarea, button {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 1px solid #ccc;
 }
 
 button {
-    background: #2c3e50;
+    background: #667eea;
     color: white;
-    border: none;
+    font-weight: bold;
     cursor: pointer;
 }
 
 button:hover {
-    background: #34495e;
+    background: #5a67d8;
 }
 
-.chat-box {
-    height: 300px;
-    border: 1px solid #ccc;
+a {
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: #667eea;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+th, td {
     padding: 10px;
-    overflow-y: auto;
-    margin-bottom: 10px;
+    border: 1px solid #ddd;
 }
 
-.bot {
-    background: #e8f0fe;
-    padding: 8px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
-
-.user {
-    background: #d1f5d3;
-    padding: 8px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    text-align: right;
+th {
+    background: #667eea;
+    color: white;
 }
