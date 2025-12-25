@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <h2>Admin Dashboard</h2>
+    <a href="/admin/logout">Logout</a>
+    <h3>Leave Applications</h3>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Reason</th>
+            <th>From Date</th>
+            <th>To Date</th>
+        </tr>
+        {% for leave in leaves %}
+        <tr>
+            <td>{{ leave[0] }}</td>
+            <td>{{ leave[1] }}</td>
+            <td>{{ leave[2] }}</td>
+            <td>{{ leave[3] }}</td>
+            <td>{{ leave[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Complaints</h3>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Complaint</th>
+        </tr>
+        {% for comp in complaints %}
+        <tr>
+            <td>{{ comp[0] }}</td>
+            <td>{{ comp[1] }}</td>
+            <td>{{ comp[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

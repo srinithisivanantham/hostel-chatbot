@@ -1,3 +1,4 @@
+app.secret_key = 'openonlyforme'
 from flask import Flask, render_template, request
 import sqlite3
 
@@ -124,6 +125,40 @@ def view_complaints():
     data = cursor.fetchall()
     conn.close()
     return render_template("view_complaints.html", complaints=data)
+# ---------------- Admin Routes ----------------
+from flask import session
+
+# Simple admin login (username: admin, password: admin123)
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username == 'admin' and password == 'admin123':
+            session['admin_logged_in'] = True
+            return redirect('/admin/dashboard')
+        else:
+            return render_template('admin_login.html', error='Invalid credentials')
+    return render_template('admin_login.html')
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    if not session.get('admin_logged_in'):
+        return redirect('/admin')
+    conn = sqlite3.connect('hostel_chatbot.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM leave_applications")
+    leaves = cursor.fetchall()
+    cursor.execute("SELECT * FROM complaints")
+    complaints = cursor.fetchall()
+    conn.close()
+    return render_template('admin_dashboard.html', leaves=leaves, complaints=complaints)
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_logged_in', None)
+    return redirect('/admin')
+
 
 # ---------- RUN ----------
 if __name__ == "__main__":
