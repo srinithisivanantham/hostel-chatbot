@@ -1,8 +1,10 @@
-app.secret_key = 'openonlyforme'
-from flask import Flask, render_template, request
+# ---------- IMPORTS ----------
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
 
+# ---------- FLASK APP ----------
 app = Flask(__name__)
+app.secret_key = "openonlyforme"  # your secret key
 
 # ---------- DATABASE SETUP ----------
 def init_db():
@@ -107,27 +109,7 @@ def submit_complaint():
 
     return "Complaint submitted successfully! <a href='/'>Go back</a>"
 
-# ---------- ADMIN VIEW ----------
-@app.route("/admin/leaves")
-def view_leaves():
-    conn = sqlite3.connect("hostel.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM leave_applications")
-    data = cursor.fetchall()
-    conn.close()
-    return render_template("view_leaves.html", leaves=data)
-
-@app.route("/admin/complaints")
-def view_complaints():
-    conn = sqlite3.connect("hostel.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM complaints")
-    data = cursor.fetchall()
-    conn.close()
-    return render_template("view_complaints.html", complaints=data)
-# ---------------- Admin Routes ----------------
-from flask import session
-
+# ---------- ADMIN ROUTES ----------
 # Simple admin login (username: admin, password: admin123)
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_login():
@@ -145,7 +127,7 @@ def admin_login():
 def admin_dashboard():
     if not session.get('admin_logged_in'):
         return redirect('/admin')
-    conn = sqlite3.connect('hostel_chatbot.db')
+    conn = sqlite3.connect('hostel.db')  # use same db as forms
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM leave_applications")
     leaves = cursor.fetchall()
@@ -159,7 +141,6 @@ def admin_logout():
     session.pop('admin_logged_in', None)
     return redirect('/admin')
 
-
-# ---------- RUN ----------
+# ---------- RUN APP ----------
 if __name__ == "__main__":
     app.run(debug=True)
