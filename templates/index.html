@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hostel Chatbot</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f2f2f2;
+        }
+        .chatbox {
+            width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #chatlog {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 75%;
+            padding: 8px;
+        }
+        button {
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chatbox">
+        <h2>College Hostel Chatbot</h2>
+        <div id="chatlog"></div>
+
+        <input type="text" id="userInput" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+<script>
+function sendMessage() {
+    let userText = document.getElementById("userInput").value;
+    let chatlog = document.getElementById("chatlog");
+
+    chatlog.innerHTML += "<p><b>You:</b> " + userText + "</p>";
+
+    fetch("/get?msg=" + userText)
+        .then(response => response.text())
+        .then(data => {
+            chatlog.innerHTML += "<p><b>Bot:</b> " + data + "</p>";
+        });
+
+    document.getElementById("userInput").value = "";
+}
+</script>
+
+</body>
+</html>
