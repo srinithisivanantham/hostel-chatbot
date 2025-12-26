@@ -1,17 +1,57 @@
-<h2>Complaints</h2>
-<table border="1">
-  <tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Room No</th>
-    <th>Complaint</th>
-  </tr>
-  {% for complaint in complaints %}
-  <tr>
-    <td>{{ complaint[0] }}</td>
-    <td>{{ complaint[1] }}</td>
-    <td>{{ complaint[2] }}</td>
-    <td>{{ complaint[3] }}</td>
-  </tr>
-  {% endfor %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid black; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+<h2>Admin Dashboard</h2>
+<a href="/admin/logout">Logout</a>
+
+<h3>Leave Applications</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Room No</th>
+        <th>From Date</th>
+        <th>To Date</th>
+        <th>Reason</th>
+    </tr>
+    {% for l in leaves %}
+    <tr>
+        <td>{{ l[0] }}</td>
+        <td>{{ l[1] }}</td>
+        <td>{{ l[2] }}</td>
+        <td>{{ l[3] }}</td>
+        <td>{{ l[4] }}</td>
+        <td>{{ l[5] }}</td>
+    </tr>
+    {% endfor %}
 </table>
+
+<h3>Complaints</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Room No</th>
+        <th>Complaint</th>
+    </tr>
+    {% for c in complaints %}
+    <tr>
+        <td>{{ c[0] }}</td>   <!-- id -->
+        <td>{{ c[1] }}</td>   <!-- name -->
+        <td>{{ c[2] }}</td>   <!-- room_no -->
+        <td>{{ c[3] }}</td>   <!-- complaint -->
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
