@@ -1,63 +1,65 @@
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #667eea, #764ba2);
     margin: 0;
-    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
 }
 
 .container {
-    width: 420px;
-    background: #fff;
-    margin: 60px auto;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-h2 {
-    text-align: center;
-    color: #4a4a4a;
+    width: 90%;
+    max-width: 700px;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 input, textarea, button {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
-    border-radius: 6px;
+    border-radius: 5px;
     border: 1px solid #ccc;
 }
 
 button {
-    background: #667eea;
+    background: #2c3e50;
     color: white;
-    font-weight: bold;
+    border: none;
     cursor: pointer;
 }
 
 button:hover {
-    background: #5a67d8;
+    background: #34495e;
 }
 
-a {
-    text-decoration: none;
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    color: #667eea;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #fff;
-}
-
-th, td {
+.chat-box {
+    height: 300px;
+    border: 1px solid #ccc;
     padding: 10px;
-    border: 1px solid #ddd;
+    overflow-y: auto;
+    margin-bottom: 10px;
 }
 
-th {
-    background: #667eea;
-    color: white;
+.bot {
+    background: #e8f0fe;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.user {
+    background: #d1f5d3;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    text-align: right;
 }
