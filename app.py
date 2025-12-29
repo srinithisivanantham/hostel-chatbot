@@ -123,7 +123,7 @@ def submit_complaint():
 @app.route("/admin", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
-        if request.form["username"] == "admin" and request.form["password"] == "admin123":
+        if request.form["username"] == "admin" and request.form["password"] == "pkr@hostel@123":
             session["admin_logged_in"] = True
             return redirect("/admin/dashboard")
         return render_template("admin_login.html", error="Invalid credentials")
