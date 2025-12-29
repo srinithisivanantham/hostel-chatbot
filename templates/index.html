@@ -1,38 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hostel Chatbot</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+✅ STEP 5: VERY IMPORTANT – Update index.html image line
 
-<header>PKR Hostel</header>
+Because your image is hostel.jpeg,
+replace this line in index.html:
 
-<div class="container">
-    <div class="chat-box" id="chat"></div>
+❌ OLD
+<img src="{{ url_for('static', filename='images/hostel.jpg') }}">
 
-    <input type="text" id="msg" placeholder="Type your message..." />
-    <button onclick="sendMsg()">Send</button>
-</div>
-
-<script>
-function sendMsg() {
-    let msg = document.getElementById("msg").value;
-    if (msg === "") return;
-
-    let chat = document.getElementById("chat");
-    chat.innerHTML += `<div class="user">${msg}</div>`;
-
-    fetch(`/get?msg=${msg}`)
-        .then(res => res.text())
-        .then(data => {
-            chat.innerHTML += `<div class="bot">${data}</div>`;
-            chat.scrollTop = chat.scrollHeight;
-        });
-
-    document.getElementById("msg").value = "";
-}
-</script>
-
-</body>
-</html>
+✅ NEW (CORRECT)
+<img src="{{ url_for('static', filename='images/hostel.jpeg') }}">
