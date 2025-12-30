@@ -1,24 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Complaint</title>
+    <meta charset="UTF-8">
+    <title>Complaint Form</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f7ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-box {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+            color: #005eff;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            background: #005eff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0046c0;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="form-container">
-    <h2>Register Complaint</h2>
+<div class="form-box">
+    <h2>Complaint Register</h2>
 
-    <form method="POST" action="/submit_complaint">
+    <form action="/submit_complaint" method="POST">
         <label>Name</label>
         <input type="text" name="name" required>
 
-        <label>Room No</label>
+        <label>Room Number</label>
         <input type="text" name="room_no" required>
 
         <label>Complaint</label>
-        <textarea name="complaint" required></textarea>
+        <textarea name="complaint" rows="4" required></textarea>
 
         <button type="submit">Submit Complaint</button>
     </form>
