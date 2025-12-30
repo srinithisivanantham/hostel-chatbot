@@ -1,52 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>PKR Hostel</title>
-
-    <!-- ✅ VERY IMPORTANT FOR MOBILE -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
 <div class="chat-container">
 
+    <!-- HEADER -->
     <div class="chat-header">
         PKR Hostel
     </div>
 
-    <div class="chat-body">
-        <div id="chatbox" class="chat-messages">
-            <div class="bot-msg">Hello! Welcome to PKR Hostel Chatbot 😊</div>
+    <!-- CHAT BODY -->
+    <div class="chat-body" id="chatBody">
+        <div class="message bot-message">
+            Hello 👋 Welcome to PKR Hostel Chatbot.<br>
+            Ask me about hostel rules, mess menu, leave or complaint.
         </div>
     </div>
 
+    <!-- INPUT -->
     <div class="chat-input">
-        <input type="text" id="userInput" placeholder="Type a message">
-        <button onclick="sendMessage()">➤</button>
+        <input type="text" id="userInput" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
     </div>
 
 </div>
 
 <script>
 function sendMessage() {
-    let input = document.getElementById("userInput");
-    let msg = input.value.trim();
-    if (msg === "") return;
+    const input = document.getElementById("userInput");
+    const message = input.value.trim();
+    if (message === "") return;
 
-    let chatbox = document.getElementById("chatbox");
+    const chatBody = document.getElementById("chatBody");
 
-    chatbox.innerHTML += `<div class="user-msg">${msg}</div>`;
-
-    fetch("/get?msg=" + msg)
-        .then(res => res.text())
-        .then(data => {
-            chatbox.innerHTML += `<div class="bot-msg">${data}</div>`;
-            chatbox.scrollTop = chatbox.scrollHeight;
-        });
+    // USER MESSAGE
+    const userDiv = document.createElement("div");
+    userDiv.className = "message user-message";
+    userDiv.innerText = message;
+    chatBody.appendChild(userDiv);
 
     input.value = "";
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    // BOT RESPONSE
+    fetch(`/get?msg=${encodeURIComponent(message)}`)
+        .then(response => response.text())
+        .then(data => {
+            const botDiv = document.createElement("div");
+            botDiv.className = "message bot-message";
+            botDiv.innerHTML = data;   // ✅ IMPORTANT: allows links
+            chatBody.appendChild(botDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
 }
 </script>
 
