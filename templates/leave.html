@@ -2,24 +2,29 @@
 <html>
 <head>
     <title>Leave Application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<header>Leave Application</header>
-
 <div class="form-container">
-    <form action="/submit_leave" method="post">
+    <h2>Leave Application</h2>
 
-        <input type="text" name="name" placeholder="Student Name" required>
+    <form method="POST" action="/submit_leave">
+        <label>Name</label>
+        <input type="text" name="name" required>
 
-        <input type="text" name="room_no" placeholder="Room Number" required>
+        <label>Room No</label>
+        <input type="text" name="room_no" required>
 
+        <label>From Date</label>
         <input type="date" name="from_date" required>
 
+        <label>To Date</label>
         <input type="date" name="to_date" required>
 
-        <textarea name="reason" placeholder="Reason for leave" required></textarea>
+        <label>Reason</label>
+        <textarea name="reason" required></textarea>
 
         <button type="submit">Submit Leave</button>
     </form>

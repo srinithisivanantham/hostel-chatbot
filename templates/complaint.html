@@ -2,20 +2,23 @@
 <html>
 <head>
     <title>Complaint</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<header>Complaint Registration</header>
-
 <div class="form-container">
-    <form action="/submit_complaint" method="post">
+    <h2>Register Complaint</h2>
 
-        <input type="text" name="name" placeholder="Student Name" required>
+    <form method="POST" action="/submit_complaint">
+        <label>Name</label>
+        <input type="text" name="name" required>
 
-        <input type="text" name="room_no" placeholder="Room Number" required>
+        <label>Room No</label>
+        <input type="text" name="room_no" required>
 
-        <textarea name="complaint" placeholder="Enter your complaint" required></textarea>
+        <label>Complaint</label>
+        <textarea name="complaint" required></textarea>
 
         <button type="submit">Submit Complaint</button>
     </form>

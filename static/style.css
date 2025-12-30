@@ -1,3 +1,4 @@
+/* ---------- COMMON ---------- */
 body {
     margin: 0;
     padding: 0;
@@ -6,10 +7,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
-/* CHAT CONTAINER */
+/* ---------- CHATBOT ---------- */
 .chat-container {
     width: 100%;
     max-width: 420px;
@@ -23,7 +24,6 @@ body {
     overflow: hidden;
 }
 
-/* HEADER */
 .chat-header {
     background: #075e54;
     color: white;
@@ -33,12 +33,11 @@ body {
     font-weight: bold;
 }
 
-/* CHAT BODY */
 .chat-body {
     flex: 1;
     padding: 10px;
     overflow-y: auto;
-    background-image: url("/static/images/hostel.jpeg");
+    background-image: url("/static/image/hostel.jpeg");
     background-size: cover;
     background-position: center;
     position: relative;
@@ -51,7 +50,6 @@ body {
     background: rgba(255, 255, 255, 0.85);
 }
 
-/* MESSAGE AREA */
 .chat-messages {
     position: relative;
     z-index: 1;
@@ -59,27 +57,24 @@ body {
     flex-direction: column;
 }
 
-/* USER MESSAGE */
 .user-msg {
     background: #dcf8c6;
-    padding: 8px 12px;
+    padding: 10px;
     border-radius: 10px;
     margin: 6px 0;
     align-self: flex-end;
     max-width: 80%;
 }
 
-/* BOT MESSAGE */
 .bot-msg {
     background: #ffffff;
-    padding: 8px 12px;
+    padding: 10px;
     border-radius: 10px;
     margin: 6px 0;
     align-self: flex-start;
     max-width: 80%;
 }
 
-/* INPUT AREA */
 .chat-input {
     display: flex;
     padding: 10px;
@@ -88,10 +83,9 @@ body {
 
 .chat-input input {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     border-radius: 20px;
     border: none;
-    outline: none;
     font-size: 16px;
 }
 
@@ -104,14 +98,55 @@ body {
     width: 42px;
     height: 42px;
     font-size: 18px;
+}
+
+/* ---------- FORM PAGES (LEAVE & COMPLAINT) ---------- */
+.form-container {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #075e54;
+    margin-bottom: 20px;
+}
+
+.form-container label {
+    font-weight: bold;
+}
+
+.form-container input,
+.form-container textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 15px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.form-container button {
+    width: 100%;
+    background: #075e54;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
     cursor: pointer;
 }
 
-/* ✅ MOBILE OPTIMIZATION */
+/* ---------- MOBILE ---------- */
 @media (max-width: 480px) {
-    .chat-container {
+    .chat-container,
+    .form-container {
+        max-width: 100%;
         height: 100vh;
-        max-height: none;
         border-radius: 0;
     }
 }
