@@ -1,31 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>PKR Hostel</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<meta charset="UTF-8">
+<title>Hostel Chatbot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eaf0ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Chat Container */
+.chat-container {
+    width: 95%;
+    max-width: 420px;
+    height: 90vh;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Background image (light) */
+.chat-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("{{ url_for('static', filename='images/hostel.jpeg') }}") center/cover no-repeat;
+    opacity: 0.18;
+    z-index: 0;
+}
+
+/* Header */
+.chat-header {
+    background: #0A1AFF;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+/* Messages */
+.chat-messages {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    z-index: 1;
+}
+
+/* Bot message */
+.bot {
+    background: #e3e8ff;
+    color: #000;
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    width: fit-content;
+    max-width: 80%;
+}
+
+/* User message */
+.user {
+    background: #0A1AFF;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    margin-left: auto;
+    width: fit-content;
+    max-width: 80%;
+}
+
+/* Input area */
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background: #f1f4ff;
+    z-index: 1;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.chat-input button {
+    margin-left: 10px;
+    padding: 10px 18px;
+    border-radius: 20px;
+    border: none;
+    background: #0A1AFF;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Links */
+.form-links {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background: #f1f4ff;
+    z-index: 1;
+}
+
+.form-links a {
+    text-decoration: none;
+    color: #0A1AFF;
+    font-weight: bold;
+}
+</style>
 </head>
+
 <body>
 
 <div class="chat-container">
 
-    <!-- HEADER -->
-    <div class="chat-header">
-        PKR Hostel
+    <div class="chat-header">🏠 Hostel Chatbot</div>
+
+    <div class="chat-messages" id="chatBox">
+        <div class="bot">Hello 👋 How can I help you?</div>
     </div>
 
-    <!-- CHAT BODY -->
-    <div class="chat-body" id="chatBody">
-        <div class="message bot-message">
-            Hello 👋 Welcome to PKR Hostel Chatbot.<br>
-            Ask me about hostel rules, mess menu, leave or complaint.
-        </div>
+    <div class="form-links">
+        <a href="/leave">Leave Form</a>
+        <a href="/complaint">Complaint Form</a>
     </div>
 
-    <!-- INPUT -->
     <div class="chat-input">
-        <input type="text" id="userInput" placeholder="Type your message..." />
+        <input type="text" id="userInput" placeholder="Type a message..." />
         <button onclick="sendMessage()">Send</button>
     </div>
 
@@ -33,31 +150,32 @@
 
 <script>
 function sendMessage() {
-    const input = document.getElementById("userInput");
-    const message = input.value.trim();
+    let input = document.getElementById("userInput");
+    let message = input.value.trim();
     if (message === "") return;
 
-    const chatBody = document.getElementById("chatBody");
+    let chatBox = document.getElementById("chatBox");
 
-    // USER MESSAGE
-    const userDiv = document.createElement("div");
-    userDiv.className = "message user-message";
-    userDiv.innerText = message;
-    chatBody.appendChild(userDiv);
+    let userMsg = document.createElement("div");
+    userMsg.className = "user";
+    userMsg.innerText = message;
+    chatBox.appendChild(userMsg);
+
+    fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: message})
+    })
+    .then(res => res.json())
+    .then(data => {
+        let botMsg = document.createElement("div");
+        botMsg.className = "bot";
+        botMsg.innerText = data.reply;
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
 
     input.value = "";
-    chatBody.scrollTop = chatBody.scrollHeight;
-
-    // BOT RESPONSE
-    fetch(`/get?msg=${encodeURIComponent(message)}`)
-        .then(response => response.text())
-        .then(data => {
-            const botDiv = document.createElement("div");
-            botDiv.className = "message bot-message";
-            botDiv.innerHTML = data;   // ✅ IMPORTANT: allows links
-            chatBody.appendChild(botDiv);
-            chatBody.scrollTop = chatBody.scrollHeight;
-        });
 }
 </script>
 
