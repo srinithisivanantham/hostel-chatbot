@@ -1,98 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>PKR Hostel</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background: #0a3d62;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 600px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        .hostel-img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        input, select, textarea, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 8px;
-            margin-bottom: 12px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            background: #0a3d62;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #07406b;
-        }
-    </style>
 </head>
 <body>
 
-<header>
-    <h1>PKR Hostel</h1>
-</header>
+    <h2>PKR Hostel</h2>
 
-<div class="container">
-
-    <!-- HOSTEL IMAGE -->
+    <!-- HOSTEL IMAGE (ONLY ADDITION) -->
     <img 
         src="{{ url_for('static', filename='images/hostel.jpeg') }}" 
-        alt="PKR Hostel"
-        class="hostel-img"
+        alt="Hostel Image"
+        style="width:300px; display:block; margin-bottom:15px;"
     >
 
-    <h3>Hostel Chatbot</h3>
+    <div id="chatbox">
+        <p><b>Bot:</b> Hello! Welcome to PKR Hostel Chatbot</p>
+    </div>
 
-    <form method="post">
-        <label>Name</label>
-        <input type="text" name="name" required>
+    <input type="text" id="userInput" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
 
-        <label>Room No</label>
-        <input type="text" name="room_no" required>
+    <script>
+        function sendMessage() {
+            let msg = document.getElementById("userInput").value;
+            if (msg.trim() === "") return;
 
-        <label>Choose Option</label>
-        <select name="option" required>
-            <option value="leave">Apply Leave</option>
-            <option value="complaint">Register Complaint</option>
-        </select>
+            let chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += "<p><b>You:</b> " + msg + "</p>";
 
-        <label>Message</label>
-        <textarea name="message" rows="4" required></textarea>
+            fetch("/get?msg=" + msg)
+            .then(res => res.text())
+            .then(data => {
+                chatbox.innerHTML += "<p><b>Bot:</b> " + data + "</p>";
+            });
 
-        <button type="submit">Submit</button>
-    </form>
-
-</div>
+            document.getElementById("userInput").value = "";
+        }
+    </script>
 
 </body>
 </html>
