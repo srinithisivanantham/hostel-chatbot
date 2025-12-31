@@ -2,94 +2,81 @@
 <html>
 <head>
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+        h2 {
+            color: #1a237e;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-bottom: 30px;
+            background: white;
         }
-
         th, td {
             border: 1px solid #ccc;
             padding: 10px;
             text-align: center;
         }
-
         th {
-            background-color: #2c3e50;
+            background-color: #1a237e;
             color: white;
         }
-
-        h2 {
-            margin-top: 30px;
+        a {
+            color: red;
+            text-decoration: none;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-<header>
-    Admin Dashboard
-    <a href="/admin/logout" style="float:right;color:white;text-decoration:none;">Logout</a>
-</header>
+<h2>Admin Dashboard</h2>
+<a href="/admin/logout">Logout</a>
 
-<div class="container">
+<h3>Leave Applications</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Room No</th>
+        <th>Reason</th>
+        <th>From Date</th>
+        <th>To Date</th>
+    </tr>
+    {% for leave in leaves %}
+    <tr>
+        <td>{{ leave[0] }}</td>
+        <td>{{ leave[1] }}</td>
+        <td>{{ leave[2] }}</td>
+        <td>{{ leave[3] }}</td>   <!-- reason -->
+        <td>{{ leave[4] }}</td>   <!-- from_date -->
+        <td>{{ leave[5] }}</td>   <!-- to_date -->
+    </tr>
+    {% endfor %}
+</table>
 
-    <!-- LEAVE APPLICATIONS -->
-    <h2>Leave Applications</h2>
-
-    {% if leaves %}
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Room No</th>
-            <th>Reason</th>
-            <th>From Date</th>
-            <th>To Date</th>
-        </tr>
-
-        {% for leave in leaves %}
-        <tr>
-            <td>{{ leave[0] }}</td>
-            <td>{{ leave[1] }}</td>
-            <td>{{ leave[2] }}</td>
-            <td>{{ leave[3] }}</td>
-            <td>{{ leave[4] }}</td>
-            <td>{{ leave[5] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-        <p>No leave applications found.</p>
-    {% endif %}
-
-    <!-- COMPLAINTS -->
-    <h2>Complaints</h2>
-
-    {% if complaints %}
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Room No</th>
-            <th>Complaint</th>
-        </tr>
-
-        {% for c in complaints %}
-        <tr>
-            <td>{{ c[0] }}</td>
-            <td>{{ c[1] }}</td>
-            <td>{{ c[2] }}</td>
-            <td>{{ c[3] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-        <p>No complaints found.</p>
-    {% endif %}
-
-</div>
+<h3>Complaints</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Room No</th>
+        <th>Complaint</th>
+    </tr>
+    {% for c in complaints %}
+    <tr>
+        <td>{{ c[0] }}</td>
+        <td>{{ c[1] }}</td>
+        <td>{{ c[2] }}</td>
+        <td>{{ c[3] }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 </body>
 </html>
