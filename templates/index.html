@@ -2,180 +2,136 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Hostel Chatbot</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PKR Hostel</title>
 
 <style>
-body {
-    margin: 0;
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#f4f6fb;
     font-family: Arial, sans-serif;
-    background: #eaf0ff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
 }
 
-/* Chat Container */
-.chat-container {
-    width: 95%;
-    max-width: 420px;
-    height: 90vh;
-    background: white;
-    border-radius: 18px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
+.chatbox{
+    width:100%;
+    max-width:420px;
+    height:90vh;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,0.2);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
 }
 
-/* Background image (light) */
-.chat-container::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: url("{{ url_for('static', filename='images/hostel.jpeg') }}") center/cover no-repeat;
-    opacity: 0.18;
-    z-index: 0;
+/* HEADER */
+.header{
+    background:#2a2a72; /* INDIGO */
+    color:white;
+    text-align:center;
+    padding:15px;
+    font-size:18px;
+    font-weight:bold;
 }
 
-/* Header */
-.chat-header {
-    background: #0A1AFF;
-    color: white;
-    text-align: center;
-    padding: 14px;
-    font-size: 18px;
-    font-weight: bold;
-    z-index: 1;
+/* CHAT AREA */
+.chat-area{
+    flex:1;
+    padding:15px;
+    overflow-y:auto;
+    background:rgba(255,255,255,0.9);
 }
 
-/* Messages */
-.chat-messages {
-    flex: 1;
-    padding: 12px;
-    overflow-y: auto;
-    z-index: 1;
+.msg{
+    max-width:80%;
+    padding:10px 14px;
+    margin:8px 0;
+    border-radius:10px;
+    font-size:14px;
 }
 
-/* Bot message */
-.bot {
-    background: #e3e8ff;
-    color: #000;
-    padding: 10px 14px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    width: fit-content;
-    max-width: 80%;
+.user{
+    background:#2a2a72;
+    color:white;
+    margin-left:auto;
 }
 
-/* User message */
-.user {
-    background: #0A1AFF;
-    color: white;
-    padding: 10px 14px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    margin-left: auto;
-    width: fit-content;
-    max-width: 80%;
+.bot{
+    background:#e5e7ff;
+    color:#000;
+    margin-right:auto;
 }
 
-/* Input area */
-.chat-input {
-    display: flex;
-    padding: 10px;
-    background: #f1f4ff;
-    z-index: 1;
+/* INPUT */
+.input-area{
+    display:flex;
+    border-top:1px solid #ccc;
 }
 
-.chat-input input {
-    flex: 1;
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    outline: none;
+input{
+    flex:1;
+    padding:12px;
+    border:none;
+    outline:none;
+    font-size:14px;
 }
 
-.chat-input button {
-    margin-left: 10px;
-    padding: 10px 18px;
-    border-radius: 20px;
-    border: none;
-    background: #0A1AFF;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
+button{
+    background:#2a2a72;
+    color:white;
+    border:none;
+    padding:0 20px;
+    cursor:pointer;
+    font-size:14px;
 }
 
-/* Links */
-.form-links {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
-    background: #f1f4ff;
-    z-index: 1;
-}
-
-.form-links a {
-    text-decoration: none;
-    color: #0A1AFF;
-    font-weight: bold;
+button:hover{
+    background:#1d1d5f;
 }
 </style>
 </head>
 
 <body>
 
-<div class="chat-container">
+<div class="chatbox">
+    <div class="header">PKR Hostel</div>
 
-    <div class="chat-header">🏠 Hostel Chatbot</div>
-
-    <div class="chat-messages" id="chatBox">
-        <div class="bot">Hello 👋 How can I help you?</div>
+    <div class="chat-area" id="chat">
+        <div class="msg bot">Hello 👋 Ask me about hostel rules, mess menu, leave, complaint or warden.</div>
     </div>
 
-    <div class="form-links">
-        <a href="/leave">Leave Form</a>
-        <a href="/complaint">Complaint Form</a>
+    <div class="input-area">
+        <input type="text" id="msg" placeholder="Type your message..." />
+        <button onclick="send()">Send</button>
     </div>
-
-    <div class="chat-input">
-        <input type="text" id="userInput" placeholder="Type a message..." />
-        <button onclick="sendMessage()">Send</button>
-    </div>
-
 </div>
 
 <script>
-function sendMessage() {
-    let input = document.getElementById("userInput");
-    let message = input.value.trim();
-    if (message === "") return;
+function send(){
+    let input = document.getElementById("msg");
+    let text = input.value.trim();
+    if(text==="") return;
 
-    let chatBox = document.getElementById("chatBox");
+    addMsg(text, "user");
+    input.value="";
 
-    let userMsg = document.createElement("div");
-    userMsg.className = "user";
-    userMsg.innerText = message;
-    chatBox.appendChild(userMsg);
-
-    fetch("/chat", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({message: message})
-    })
-    .then(res => res.json())
-    .then(data => {
-        let botMsg = document.createElement("div");
-        botMsg.className = "bot";
-        botMsg.innerText = data.reply;
-        chatBox.appendChild(botMsg);
-        chatBox.scrollTop = chatBox.scrollHeight;
+    fetch(`/get?msg=${encodeURIComponent(text)}`)
+    .then(res=>res.text())
+    .then(data=>{
+        addMsg(data, "bot");
     });
+}
 
-    input.value = "";
+function addMsg(text, cls){
+    let div = document.createElement("div");
+    div.className = "msg " + cls;
+    div.innerHTML = text;
+    document.getElementById("chat").appendChild(div);
+    document.getElementById("chat").scrollTop = chat.scrollHeight;
 }
 </script>
 
