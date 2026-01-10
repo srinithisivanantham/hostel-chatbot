@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "openonlyforme"
 
-# ---------- DATABASE PATH (FIX) ----------
+# ---------- DATABASE PATH ----------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "hostel.db")
 
@@ -16,9 +16,26 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
+    # ---------- STUDENTS TABLE (College Database) ----------
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            reg_no TEXT PRIMARY KEY,
+            name TEXT,
+            mobile TEXT,
+            room_no TEXT
+        )
+    """)
+
+    # ---------- SAMPLE STUDENT DATA ----------
+    cursor.execute("INSERT OR IGNORE INTO students VALUES ('231cs048', 'Srinithi S', '9345518460', '12')")
+    cursor.execute("INSERT OR IGNORE INTO students VALUES ('231cs024', 'Madhu sree S', '6369231372', '34')")
+    cursor.execute("INSERT OR IGNORE INTO students VALUES ('231cs025', 'Manisha S', '9788618924', '21')")
+
+    # ---------- LEAVE TABLE ----------
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS leave_applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            register_no TEXT,
             name TEXT,
             room_no TEXT,
             reason TEXT,
@@ -27,9 +44,11 @@ def init_db():
         )
     """)
 
+    # ---------- COMPLAINT TABLE ----------
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS complaints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            register_no TEXT,
             name TEXT,
             room_no TEXT,
             complaint TEXT
@@ -51,13 +70,13 @@ def home():
 def chatbot():
     msg = request.args.get("msg", "").lower()
 
-    if "hi" in msg:
-        return "Hello! Welcome to PKR Hostel 😊"
+    if "hi" in msg or "hello" in msg or "hey" in msg:
+        return "Hello! Welcome to PKR Hostel😊 How can I help you?"
 
-    elif "hostel rules" in msg:
+    elif "hostel rules" in msg or "rules" in msg:
         return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
 
-    elif "mess menu" in msg:
+    elif "mess menu" in msg or "menu" in msg or "mess" in msg:
         return "Breakfast: Idli/Dosa<br>Lunch: Rice, Sambar<br>Dinner: Chapati"
 
     elif "leave" in msg:
@@ -79,6 +98,7 @@ def leave_form():
 
 @app.route("/submit_leave", methods=["POST"])
 def submit_leave():
+    register_no = request.form["register_no"]
     name = request.form["name"]
     room_no = request.form["room_no"]
     reason = request.form["reason"]
@@ -89,9 +109,9 @@ def submit_leave():
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO leave_applications 
-        (name, room_no, reason, from_date, to_date)
+        (register_no, name, room_no, reason, from_date, to_date)
         VALUES (?, ?, ?, ?, ?)
-    """, (name, room_no, reason, from_date, to_date))
+    """, (register_no, name, room_no, reason, from_date, to_date))
     conn.commit()
     conn.close()
 
@@ -104,6 +124,7 @@ def complaint_form():
 
 @app.route("/submit_complaint", methods=["POST"])
 def submit_complaint():
+    register_no = request.form["register_no"]
     name = request.form["name"]
     room_no = request.form["room_no"]
     complaint = request.form["complaint"]
@@ -111,9 +132,9 @@ def submit_complaint():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO complaints (name, room_no, complaint)
+        INSERT INTO complaints (register_no, name, room_no, complaint)
         VALUES (?, ?, ?)
-    """, (name, room_no, complaint))
+    """, (register_no, name, room_no, complaint))
     conn.commit()
     conn.close()
 

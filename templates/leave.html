@@ -1,54 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Leave Application</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Leave Form</title>
     <style>
         body {
-            font-family: Arial;
-            background: #f5f5f5;
-            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 30px;
         }
         form {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 400px;
+            padding: 25px;
+            width: 350px;
             margin: auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            border-radius: 8px;
         }
-        h2 {
-            text-align: center;
-            color: #0f5132;
-        }
-        input, textarea {
+        input, textarea, button {
             width: 100%;
             padding: 10px;
             margin-top: 10px;
         }
         button {
-            width: 100%;
-            margin-top: 15px;
-            padding: 12px;
-            background: #0f5132;
+            background-color: #1a237e;   /* Indigo Dark Blue */
             color: white;
             border: none;
-            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-<form method="post" action="/submit_leave">
-    <h2>Leave Application</h2>
+<h2 style="text-align:center;">Leave Application</h2>
 
-    <input type="text" name="name" placeholder="Name" required>
-    <input type="text" name="room_no" placeholder="Room No" required>
-    <input type="date" name="from_date" required>
-    <input type="date" name="to_date" required>
-    <textarea name="reason" placeholder="Reason" required></textarea>
+<form action="/submit_leave" method="POST">
 
-    <button type="submit">Submit</button>
+    <!-- ✅ Register Number -->
+    <input type="text" name="register_no" placeholder="Register Number" required>
+
+    <input type="text" name="name" placeholder="Student Name" required>
+
+    <input type="text" name="room_no" placeholder="Room Number" required>
+
+    <textarea name="reason" placeholder="Reason for Leave" required></textarea>
+
+    <label>From Date:</label>
+    <input type="date" name="from_date" placeholder="From Date" required>
+
+    <label>To Date:</label>
+    <input type="date" name="to_date" placeholder="To Date">
+
+    <button type="submit">Submit Leave</button>
+
 </form>
 
 </body>
