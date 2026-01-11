@@ -16,7 +16,6 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Leave table with Register Number
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS leave_applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +28,6 @@ def init_db():
         )
     """)
 
-    # Complaint table with Register Number
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS complaints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,19 +53,19 @@ def home():
 def chatbot():
     msg = request.args.get("msg", "").lower()
 
-    if "hi" in msg or "hello" in msg:
-        return "Hello! Welcome to PKR Hostel 😊"
+    if "hi" in msg or "hello" in msg or "hey" in msg:
+        return "Hello! Welcome to PKR Hostel 😊 How can I hel you?"
 
-    elif "rules" in msg or "hostel rules" in msg:
+    elif "hostel rules" in msg or "rules" in msg:
         return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
 
-    elif "food" in msg or "mess" in msg or "menu" in msg:
+    elif "mess menu" in msg or "food" in msg or "menu" in msg:
         return "Breakfast: Idli/Dosa<br>Lunch: Rice, Sambar<br>Dinner: Chapati"
 
-    elif "leave" in msg or "apply leave" in msg:
+    elif "leave" in msg:
         return "Apply for leave here: <a href='/leave'>Leave Form</a>"
 
-    elif "complaint" in msg or "problem" in msg:
+    elif "complaint" in msg:
         return "Register complaint here: <a href='/complaint'>Complaint Form</a>"
 
     elif "warden" in msg:
@@ -143,13 +141,10 @@ def admin_dashboard():
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-
     cursor.execute("SELECT * FROM leave_applications")
     leaves = cursor.fetchall()
-
     cursor.execute("SELECT * FROM complaints")
     complaints = cursor.fetchall()
-
     conn.close()
 
     return render_template(
