@@ -2,55 +2,25 @@
 <html>
 <head>
     <title>Leave Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            padding: 30px;
-        }
-        form {
-            background: white;
-            padding: 25px;
-            width: 350px;
-            margin: auto;
-            border-radius: 8px;
-        }
-        input, textarea, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-        button {
-            background-color: #1a237e;   /* Indigo Dark Blue */
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
+<h2>Leave Application</h2>
 
-<h2 style="text-align:center;">Leave Application</h2>
+<form action="/submit_leave" method="post">
 
-<form action="/submit_leave" method="POST">
+    Register Number:
+    <input type="text" name="register_no" required><br><br>
 
-    <!-- ✅ Register Number -->
-    <input type="text" name="register_no" placeholder="Register Number" required>
+    Reason:
+    <input type="text" name="reason" required><br><br>
 
-    <input type="text" name="name" placeholder="Student Name" required>
+    From Date:
+    <input type="date" name="from_date" required><br><br>
 
-    <input type="text" name="room_no" placeholder="Room Number" required>
+    To Date:
+    <input type="date" name="to_date" required><br><br>
 
-    <textarea name="reason" placeholder="Reason for Leave" required></textarea>
-
-    <label>From Date:</label>
-    <input type="date" name="from_date" placeholder="From Date" required>
-
-    <label>To Date:</label>
-    <input type="date" name="to_date" placeholder="To Date">
-
-    <button type="submit">Submit Leave</button>
-
+    <button type="submit">Submit</button>
 </form>
 
 </body>

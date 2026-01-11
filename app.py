@@ -11,58 +11,54 @@ app.secret_key = "openonlyforme"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "hostel.db")
 
-# ---------- SMS FUNCTION (SIMULATION) ----------
-def send_sms(phone, message):
-    print("📩 SMS SENT TO:", phone)
-    print("MESSAGE:", message)
-
 # ---------- DATABASE SETUP ----------
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # STUDENT TABLE
+    # Student dummy table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS students (
-            reg_no TEXT PRIMARY KEY,
+            register_no TEXT PRIMARY KEY,
             name TEXT,
-            phone TEXT
+            phone TEXT,
+            room_no TEXT
         )
     """)
 
-    # INSERT DUMMY STUDENTS (only once)
+    # Insert dummy students only once
     cursor.execute("SELECT COUNT(*) FROM students")
-    if cursor.fetchone()[0] == 0:
-        students = [
-            ("231cs048", "Srinithi", "9345518460"),
-            ("231cs024", "Madhu sree", "6369231372"),
-            ("231cs025", "Manisha", "9788618924")
-        ]
-        cursor.executemany("INSERT INTO students VALUES (?, ?, ?)", students)
+    count = cursor.fetchone()[0]
+    if count == 0:
+        cursor.executemany("""
+            INSERT INTO students VALUES (?, ?, ?, ?)
+        """, [
+            ("231cs048", "Srinithi", "9345518460", "12"),
+            ("231cs025", "Manisha", "9788618924", "13"),
+            ("PKR003", "Madhu", "6369231372", "14"),
+        ])
 
-    # LEAVE TABLE
+    # Leave table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS leave_applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            reg_no TEXT,
+            register_no TEXT,
             name TEXT,
             room_no TEXT,
             reason TEXT,
             from_date TEXT,
-            to_date TEXT,
-            status TEXT DEFAULT 'Pending'
+            to_date TEXT
         )
     """)
 
-    # COMPLAINT TABLE
+    # Complaint table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS complaints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            reg_no TEXT,
+            register_no TEXT,
             name TEXT,
             room_no TEXT,
-            complaint TEXT,
-            status TEXT DEFAULT 'Pending'
+            complaint TEXT
         )
     """)
 
@@ -81,19 +77,19 @@ def home():
 def chatbot():
     msg = request.args.get("msg", "").lower()
 
-    if any(word in msg for word in ["hi", "hello", "hey"]):
-        return "Hello! Welcome to PKR Hostel 😊 How can I help you?"
+    if "hi" in msg or "hello" in msg or "hey" in msg:
+        return "Hello! Welcome to PKR Hostel 😊"
 
-    elif any(word in msg for word in ["rules", "hostel rules"]):
+    elif "hostel rules" in msg or "rules" in msg:
         return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
 
-    elif any(word in msg for word in ["menu", "food", "mess"]):
+    elif "mess menu" in msg or "menu" in msg:
         return "Breakfast: Idli/Dosa<br>Lunch: Rice, Sambar<br>Dinner: Chapati"
 
-    elif any(word in msg for word in ["leave", "permission"]):
+    elif "leave" in msg:
         return "Apply for leave here: <a href='/leave'>Leave Form</a>"
 
-    elif any(word in msg for word in ["complaint", "problem", "issue"]):
+    elif "complaint" in msg:
         return "Register complaint here: <a href='/complaint'>Complaint Form</a>"
 
     elif "warden" in msg:
@@ -109,8 +105,7 @@ def leave_form():
 
 @app.route("/submit_leave", methods=["POST"])
 def submit_leave():
-    reg_no = request.form["reg_no"]
-    room_no = request.form["room_no"]
+    register_no = request.form["register_no"]
     reason = request.form["reason"]
     from_date = request.form["from_date"]
     to_date = request.form["to_date"]
@@ -118,23 +113,24 @@ def submit_leave():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Fetch student info
-    cursor.execute("SELECT name FROM students WHERE reg_no=?", (reg_no,))
+    # Fetch student details
+    cursor.execute("SELECT name, room_no FROM students WHERE register_no=?", (register_no,))
     student = cursor.fetchone()
-    if not student:
-        return "Invalid Register Number"
 
-    name = student[0]
+    if not student:
+        conn.close()
+        return "❌ Invalid Register Number"
+
+    name, room_no = student
 
     cursor.execute("""
-        INSERT INTO leave_applications
-        (reg_no, name, room_no, reason, from_date, to_date)
+        INSERT INTO leave_applications 
+        (register_no, name, room_no, reason, from_date, to_date)
         VALUES (?, ?, ?, ?, ?, ?)
-    """, (reg_no, name, room_no, reason, from_date, to_date))
+    """, (register_no, name, room_no, reason, from_date, to_date))
 
     conn.commit()
     conn.close()
-
     return redirect("/")
 
 # ---------- COMPLAINT ----------
@@ -144,28 +140,29 @@ def complaint_form():
 
 @app.route("/submit_complaint", methods=["POST"])
 def submit_complaint():
-    reg_no = request.form["reg_no"]
-    room_no = request.form["room_no"]
+    register_no = request.form["register_no"]
     complaint = request.form["complaint"]
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT name FROM students WHERE reg_no=?", (reg_no,))
+    cursor.execute("SELECT name, room_no FROM students WHERE register_no=?", (register_no,))
     student = cursor.fetchone()
-    if not student:
-        return "Invalid Register Number"
 
-    name = student[0]
+    if not student:
+        conn.close()
+        return "❌ Invalid Register Number"
+
+    name, room_no = student
 
     cursor.execute("""
-        INSERT INTO complaints (reg_no, name, room_no, complaint)
+        INSERT INTO complaints 
+        (register_no, name, room_no, complaint)
         VALUES (?, ?, ?, ?)
-    """, (reg_no, name, room_no, complaint))
+    """, (register_no, name, room_no, complaint))
 
     conn.commit()
     conn.close()
-
     return redirect("/")
 
 # ---------- ADMIN ----------
@@ -185,55 +182,13 @@ def admin_dashboard():
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-
     cursor.execute("SELECT * FROM leave_applications")
     leaves = cursor.fetchall()
-
     cursor.execute("SELECT * FROM complaints")
     complaints = cursor.fetchall()
-
     conn.close()
 
     return render_template("admin_dashboard.html", leaves=leaves, complaints=complaints)
-
-# ---------- ACTION BUTTONS ----------
-@app.route("/leave_action/<int:id>/<action>")
-def leave_action(id, action):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT reg_no FROM leave_applications WHERE id=?", (id,))
-    reg_no = cursor.fetchone()[0]
-
-    cursor.execute("SELECT phone FROM students WHERE reg_no=?", (reg_no,))
-    phone = cursor.fetchone()[0]
-
-    cursor.execute("UPDATE leave_applications SET status=? WHERE id=?", (action, id))
-    conn.commit()
-    conn.close()
-
-    send_sms(phone, f"Your leave request has been {action}")
-
-    return redirect("/admin/dashboard")
-
-@app.route("/complaint_action/<int:id>/<action>")
-def complaint_action(id, action):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT reg_no FROM complaints WHERE id=?", (id,))
-    reg_no = cursor.fetchone()[0]
-
-    cursor.execute("SELECT phone FROM students WHERE reg_no=?", (reg_no,))
-    phone = cursor.fetchone()[0]
-
-    cursor.execute("UPDATE complaints SET status=? WHERE id=?", (action, id))
-    conn.commit()
-    conn.close()
-
-    send_sms(phone, f"Your complaint has been {action}")
-
-    return redirect("/admin/dashboard")
 
 @app.route("/admin/logout")
 def admin_logout():
