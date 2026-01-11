@@ -16,22 +16,7 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # ---------- STUDENTS TABLE (College Database) ----------
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS students (
-            reg_no TEXT PRIMARY KEY,
-            name TEXT,
-            mobile TEXT,
-            room_no TEXT
-        )
-    """)
-
-    # ---------- SAMPLE STUDENT DATA ----------
-    cursor.execute("INSERT OR IGNORE INTO students VALUES ('231cs048', 'Srinithi S', '9345518460', '12')")
-    cursor.execute("INSERT OR IGNORE INTO students VALUES ('231cs024', 'Madhu sree S', '6369231372', '34')")
-    cursor.execute("INSERT OR IGNORE INTO students VALUES ('231cs025', 'Manisha S', '9788618924', '21')")
-
-    # ---------- LEAVE TABLE ----------
+    # Leave table with Register Number
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS leave_applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,7 +29,7 @@ def init_db():
         )
     """)
 
-    # ---------- COMPLAINT TABLE ----------
+    # Complaint table with Register Number
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS complaints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,19 +55,19 @@ def home():
 def chatbot():
     msg = request.args.get("msg", "").lower()
 
-    if "hi" in msg or "hello" in msg or "hey" in msg:
-        return "Hello! Welcome to PKR Hostel😊 How can I help you?"
+    if "hi" in msg or "hello" in msg:
+        return "Hello! Welcome to PKR Hostel 😊"
 
-    elif "hostel rules" in msg or "rules" in msg:
+    elif "rules" in msg or "hostel rules" in msg:
         return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
 
-    elif "mess menu" in msg or "menu" in msg or "mess" in msg:
+    elif "food" in msg or "mess" in msg or "menu" in msg:
         return "Breakfast: Idli/Dosa<br>Lunch: Rice, Sambar<br>Dinner: Chapati"
 
-    elif "leave" in msg:
+    elif "leave" in msg or "apply leave" in msg:
         return "Apply for leave here: <a href='/leave'>Leave Form</a>"
 
-    elif "complaint" in msg:
+    elif "complaint" in msg or "problem" in msg:
         return "Register complaint here: <a href='/complaint'>Complaint Form</a>"
 
     elif "warden" in msg:
@@ -110,7 +95,7 @@ def submit_leave():
     cursor.execute("""
         INSERT INTO leave_applications 
         (register_no, name, room_no, reason, from_date, to_date)
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
     """, (register_no, name, room_no, reason, from_date, to_date))
     conn.commit()
     conn.close()
@@ -132,8 +117,9 @@ def submit_complaint():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO complaints (register_no, name, room_no, complaint)
-        VALUES (?, ?, ?)
+        INSERT INTO complaints 
+        (register_no, name, room_no, complaint)
+        VALUES (?, ?, ?, ?)
     """, (register_no, name, room_no, complaint))
     conn.commit()
     conn.close()
@@ -157,10 +143,13 @@ def admin_dashboard():
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+
     cursor.execute("SELECT * FROM leave_applications")
     leaves = cursor.fetchall()
+
     cursor.execute("SELECT * FROM complaints")
     complaints = cursor.fetchall()
+
     conn.close()
 
     return render_template(
