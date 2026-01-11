@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
 import os
+import requests
 
 # ---------- FLASK APP ----------
 app = Flask(__name__)
@@ -11,19 +12,42 @@ app.secret_key = "openonlyforme"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "hostel.db")
 
+# ---------- SMS FUNCTION ----------
+def send_sms(phone, message):
+    url = "https://www.fast2sms.com/dev/bulkV2"
+    headers = {
+        "authorization": "bQq8c6ZJs4hCi7DX92MfYj3BA1kTvpHmuOtdLGURzKxIgawoFlfrZwB0muX2kVlnDQSFpde5P6tL7oI3",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "sender_id": "FSTSMS",
+        "message": message,
+        "language": "english",
+        "route": "v3",
+        "numbers": phone
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        return response.json()
+    except Exception as e:
+        print("SMS Error:", e)
+        return {"error": "SMS Failed"}
+
 # ---------- DATABASE SETUP ----------
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Student dummy table
+    # Student table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS students (
             register_no TEXT PRIMARY KEY,
             name TEXT,
             phone TEXT,
             room_no TEXT
-        )
+        );
     """)
 
     # Insert dummy students only once
@@ -47,8 +71,9 @@ def init_db():
             room_no TEXT,
             reason TEXT,
             from_date TEXT,
-            to_date TEXT
-        )
+            to_date TEXT,
+            status TEXT DEFAULT 'Pending'
+        );
     """)
 
     # Complaint table
@@ -58,8 +83,9 @@ def init_db():
             register_no TEXT,
             name TEXT,
             room_no TEXT,
-            complaint TEXT
-        )
+            complaint TEXT,
+            status TEXT DEFAULT 'Pending'
+        );
     """)
 
     conn.commit()
@@ -77,13 +103,13 @@ def home():
 def chatbot():
     msg = request.args.get("msg", "").lower()
 
-    if "hi" in msg or "hello" in msg or "hey" in msg:
+    if "hi" in msg or "hello" in msg:
         return "Hello! Welcome to PKR Hostel 😊"
 
-    elif "hostel rules" in msg or "rules" in msg:
+    elif "rules" in msg:
         return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
 
-    elif "mess menu" in msg or "menu" in msg:
+    elif "menu" in msg:
         return "Breakfast: Idli/Dosa<br>Lunch: Rice, Sambar<br>Dinner: Chapati"
 
     elif "leave" in msg:
@@ -92,11 +118,8 @@ def chatbot():
     elif "complaint" in msg:
         return "Register complaint here: <a href='/complaint'>Complaint Form</a>"
 
-    elif "warden" in msg:
-        return "Warden Contact: +91-9876543210"
-
     else:
-        return "Please ask about hostel rules, mess menu, leave, complaint or warden."
+        return "Ask about rules, menu, leave or complaint."
 
 # ---------- LEAVE ----------
 @app.route("/leave")
@@ -113,7 +136,6 @@ def submit_leave():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Fetch student details
     cursor.execute("SELECT name, room_no FROM students WHERE register_no=?", (register_no,))
     student = cursor.fetchone()
 
@@ -125,8 +147,8 @@ def submit_leave():
 
     cursor.execute("""
         INSERT INTO leave_applications 
-        (register_no, name, room_no, reason, from_date, to_date)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (register_no, name, room_no, reason, from_date, to_date, status)
+        VALUES (?, ?, ?, ?, ?, ?, 'Pending')
     """, (register_no, name, room_no, reason, from_date, to_date))
 
     conn.commit()
@@ -143,58 +165,4 @@ def submit_complaint():
     register_no = request.form["register_no"]
     complaint = request.form["complaint"]
 
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT name, room_no FROM students WHERE register_no=?", (register_no,))
-    student = cursor.fetchone()
-
-    if not student:
-        conn.close()
-        return "❌ Invalid Register Number"
-
-    name, room_no = student
-
-    cursor.execute("""
-        INSERT INTO complaints 
-        (register_no, name, room_no, complaint)
-        VALUES (?, ?, ?, ?)
-    """, (register_no, name, room_no, complaint))
-
-    conn.commit()
-    conn.close()
-    return redirect("/")
-
-# ---------- ADMIN ----------
-@app.route("/admin", methods=["GET", "POST"])
-def admin_login():
-    if request.method == "POST":
-        if request.form["username"] == "admin" and request.form["password"] == "pkr@hostel@123":
-            session["admin_logged_in"] = True
-            return redirect("/admin/dashboard")
-        return render_template("admin_login.html", error="Invalid credentials")
-    return render_template("admin_login.html")
-
-@app.route("/admin/dashboard")
-def admin_dashboard():
-    if not session.get("admin_logged_in"):
-        return redirect("/admin")
-
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM leave_applications")
-    leaves = cursor.fetchall()
-    cursor.execute("SELECT * FROM complaints")
-    complaints = cursor.fetchall()
-    conn.close()
-
-    return render_template("admin_dashboard.html", leaves=leaves, complaints=complaints)
-
-@app.route("/admin/logout")
-def admin_logout():
-    session.pop("admin_logged_in", None)
-    return redirect("/admin")
-
-# ---------- RUN ----------
-if __name__ == "__main__":
-    app.run(debug=True)
+    conn = sqlite3.co

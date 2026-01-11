@@ -28,10 +28,10 @@
 <td>{{ l[4] }}</td>
 <td>{{ l[5] }}</td>
 <td>{{ l[6] }}</td>
-<td>{{ l[7] }}</td>
+<td><b>{{ l[7] }}</b></td>
 <td>
-<a href="/leave_action/{{ l[0] }}/Accepted">Accept</a> |
-<a href="/leave_action/{{ l[0] }}/Rejected">Reject</a>
+<a href="/leave_action/{{ l[0] }}/Accepted">✅ Accept</a> |
+<a href="/leave_action/{{ l[0] }}/Rejected">❌ Reject</a>
 </td>
 </tr>
 {% endfor %}
@@ -58,9 +58,9 @@
 <td>{{ c[2] }}</td>
 <td>{{ c[3] }}</td>
 <td>{{ c[4] }}</td>
-<td>{{ c[5] }}</td>
+<td><b>{{ c[5] }}</b></td>
 <td>
-<a href="/complaint_action/{{ c[0] }}/Resolved">Mark Done</a>
+<a href="/complaint_action/{{ c[0] }}/Resolved">✔ Mark Done</a>
 </td>
 </tr>
 {% endfor %}
