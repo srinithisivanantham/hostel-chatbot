@@ -11,30 +11,58 @@ app.secret_key = "openonlyforme"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "hostel.db")
 
+# ---------- SMS FUNCTION (SIMULATION) ----------
+def send_sms(phone, message):
+    print("📩 SMS SENT TO:", phone)
+    print("MESSAGE:", message)
+
 # ---------- DATABASE SETUP ----------
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
+    # STUDENT TABLE
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            reg_no TEXT PRIMARY KEY,
+            name TEXT,
+            phone TEXT
+        )
+    """)
+
+    # INSERT DUMMY STUDENTS (only once)
+    cursor.execute("SELECT COUNT(*) FROM students")
+    if cursor.fetchone()[0] == 0:
+        students = [
+            ("231cs048", "Srinithi", "9345518460"),
+            ("231cs024", "Madhu sree", "6369231372"),
+            ("231cs025", "Manisha", "9788618924")
+        ]
+        cursor.executemany("INSERT INTO students VALUES (?, ?, ?)", students)
+
+    # LEAVE TABLE
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS leave_applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            register_no TEXT,
+            reg_no TEXT,
             name TEXT,
             room_no TEXT,
             reason TEXT,
             from_date TEXT,
-            to_date TEXT
+            to_date TEXT,
+            status TEXT DEFAULT 'Pending'
         )
     """)
 
+    # COMPLAINT TABLE
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS complaints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            register_no TEXT,
+            reg_no TEXT,
             name TEXT,
             room_no TEXT,
-            complaint TEXT
+            complaint TEXT,
+            status TEXT DEFAULT 'Pending'
         )
     """)
 
@@ -53,19 +81,19 @@ def home():
 def chatbot():
     msg = request.args.get("msg", "").lower()
 
-    if "hi" in msg or "hello" in msg or "hey" in msg:
-        return "Hello! Welcome to PKR Hostel 😊 How can I hel you?"
+    if any(word in msg for word in ["hi", "hello", "hey"]):
+        return "Hello! Welcome to PKR Hostel 😊 How can I help you?"
 
-    elif "hostel rules" in msg or "rules" in msg:
+    elif any(word in msg for word in ["rules", "hostel rules"]):
         return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
 
-    elif "mess menu" in msg or "food" in msg or "menu" in msg:
+    elif any(word in msg for word in ["menu", "food", "mess"]):
         return "Breakfast: Idli/Dosa<br>Lunch: Rice, Sambar<br>Dinner: Chapati"
 
-    elif "leave" in msg:
+    elif any(word in msg for word in ["leave", "permission"]):
         return "Apply for leave here: <a href='/leave'>Leave Form</a>"
 
-    elif "complaint" in msg:
+    elif any(word in msg for word in ["complaint", "problem", "issue"]):
         return "Register complaint here: <a href='/complaint'>Complaint Form</a>"
 
     elif "warden" in msg:
@@ -81,8 +109,7 @@ def leave_form():
 
 @app.route("/submit_leave", methods=["POST"])
 def submit_leave():
-    register_no = request.form["register_no"]
-    name = request.form["name"]
+    reg_no = request.form["reg_no"]
     room_no = request.form["room_no"]
     reason = request.form["reason"]
     from_date = request.form["from_date"]
@@ -90,11 +117,21 @@ def submit_leave():
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+
+    # Fetch student info
+    cursor.execute("SELECT name FROM students WHERE reg_no=?", (reg_no,))
+    student = cursor.fetchone()
+    if not student:
+        return "Invalid Register Number"
+
+    name = student[0]
+
     cursor.execute("""
-        INSERT INTO leave_applications 
-        (register_no, name, room_no, reason, from_date, to_date)
+        INSERT INTO leave_applications
+        (reg_no, name, room_no, reason, from_date, to_date)
         VALUES (?, ?, ?, ?, ?, ?)
-    """, (register_no, name, room_no, reason, from_date, to_date))
+    """, (reg_no, name, room_no, reason, from_date, to_date))
+
     conn.commit()
     conn.close()
 
@@ -107,18 +144,25 @@ def complaint_form():
 
 @app.route("/submit_complaint", methods=["POST"])
 def submit_complaint():
-    register_no = request.form["register_no"]
-    name = request.form["name"]
+    reg_no = request.form["reg_no"]
     room_no = request.form["room_no"]
     complaint = request.form["complaint"]
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+
+    cursor.execute("SELECT name FROM students WHERE reg_no=?", (reg_no,))
+    student = cursor.fetchone()
+    if not student:
+        return "Invalid Register Number"
+
+    name = student[0]
+
     cursor.execute("""
-        INSERT INTO complaints 
-        (register_no, name, room_no, complaint)
+        INSERT INTO complaints (reg_no, name, room_no, complaint)
         VALUES (?, ?, ?, ?)
-    """, (register_no, name, room_no, complaint))
+    """, (reg_no, name, room_no, complaint))
+
     conn.commit()
     conn.close()
 
@@ -141,17 +185,55 @@ def admin_dashboard():
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+
     cursor.execute("SELECT * FROM leave_applications")
     leaves = cursor.fetchall()
+
     cursor.execute("SELECT * FROM complaints")
     complaints = cursor.fetchall()
+
     conn.close()
 
-    return render_template(
-        "admin_dashboard.html",
-        leaves=leaves,
-        complaints=complaints
-    )
+    return render_template("admin_dashboard.html", leaves=leaves, complaints=complaints)
+
+# ---------- ACTION BUTTONS ----------
+@app.route("/leave_action/<int:id>/<action>")
+def leave_action(id, action):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT reg_no FROM leave_applications WHERE id=?", (id,))
+    reg_no = cursor.fetchone()[0]
+
+    cursor.execute("SELECT phone FROM students WHERE reg_no=?", (reg_no,))
+    phone = cursor.fetchone()[0]
+
+    cursor.execute("UPDATE leave_applications SET status=? WHERE id=?", (action, id))
+    conn.commit()
+    conn.close()
+
+    send_sms(phone, f"Your leave request has been {action}")
+
+    return redirect("/admin/dashboard")
+
+@app.route("/complaint_action/<int:id>/<action>")
+def complaint_action(id, action):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT reg_no FROM complaints WHERE id=?", (id,))
+    reg_no = cursor.fetchone()[0]
+
+    cursor.execute("SELECT phone FROM students WHERE reg_no=?", (reg_no,))
+    phone = cursor.fetchone()[0]
+
+    cursor.execute("UPDATE complaints SET status=? WHERE id=?", (action, id))
+    conn.commit()
+    conn.close()
+
+    send_sms(phone, f"Your complaint has been {action}")
+
+    return redirect("/admin/dashboard")
 
 @app.route("/admin/logout")
 def admin_logout():

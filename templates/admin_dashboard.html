@@ -2,88 +2,72 @@
 <html>
 <head>
     <title>Admin Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            padding: 20px;
-        }
-
-        h2 {
-            color: #1a237e;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            background: white;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background: #1a237e;
-            color: white;
-        }
-
-        a {
-            color: #1a237e;
-            font-weight: bold;
-            text-decoration: none;
-        }
-    </style>
 </head>
 <body>
 
-<h2>Admin Dashboard</h2>
+<h2>Leave Applications</h2>
+<table border="1" cellpadding="5">
+<tr>
+<th>ID</th>
+<th>Reg No</th>
+<th>Name</th>
+<th>Room</th>
+<th>Reason</th>
+<th>From</th>
+<th>To</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+{% for l in leaves %}
+<tr>
+<td>{{ l[0] }}</td>
+<td>{{ l[1] }}</td>
+<td>{{ l[2] }}</td>
+<td>{{ l[3] }}</td>
+<td>{{ l[4] }}</td>
+<td>{{ l[5] }}</td>
+<td>{{ l[6] }}</td>
+<td>{{ l[7] }}</td>
+<td>
+<a href="/leave_action/{{ l[0] }}/Accepted">Accept</a> |
+<a href="/leave_action/{{ l[0] }}/Rejected">Reject</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+
+<br><br>
+
+<h2>Complaints</h2>
+<table border="1" cellpadding="5">
+<tr>
+<th>ID</th>
+<th>Reg No</th>
+<th>Name</th>
+<th>Room</th>
+<th>Complaint</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+{% for c in complaints %}
+<tr>
+<td>{{ c[0] }}</td>
+<td>{{ c[1] }}</td>
+<td>{{ c[2] }}</td>
+<td>{{ c[3] }}</td>
+<td>{{ c[4] }}</td>
+<td>{{ c[5] }}</td>
+<td>
+<a href="/complaint_action/{{ c[0] }}/Resolved">Mark Done</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+
+<br>
 <a href="/admin/logout">Logout</a>
-
-<h3>Leave Applications</h3>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Room No</th>
-        <th>From Date</th>
-        <th>To Date</th>
-        <th>Reason</th>
-    </tr>
-
-    {% for l in leaves %}
-    <tr>
-        <td>{{ l[0] }}</td>  <!-- id -->
-        <td>{{ l[1] }}</td>  <!-- name -->
-        <td>{{ l[2] }}</td>  <!-- room_no -->
-        <td>{{ l[3] }}</td>  <!-- reason -->
-        <td>{{ l[4] }}</td>  <!-- from_date -->
-        <td>{{ l[5] }}</td>  <!-- to_date -->
-    </tr>
-    {% endfor %}
-</table>
-
-<h3>Complaints</h3>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Room No</th>
-        <th>Complaint</th>
-    </tr>
-
-    {% for c in complaints %}
-    <tr>
-        <td>{{ c[0] }}</td>
-        <td>{{ c[1] }}</td>
-        <td>{{ c[2] }}</td>
-        <td>{{ c[3] }}</td>
-    </tr>
-    {% endfor %}
-</table>
 
 </body>
 </html>
