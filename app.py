@@ -271,3 +271,45 @@ def complaint_action(complaint_id):
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(debug=True)
+    from flask import redirect, url_for
+
+# -------------------------------
+# ACTION BUTTON ROUTE (FIX)
+# -------------------------------
+@app.route("/leave_action/<int:leave_id>/<string:action>")
+def leave_action(leave_id, action):
+    try:
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+
+        # Update status in DB
+        cursor.execute(
+            "UPDATE leave_requests SET status=? WHERE id=?",
+            (action, leave_id)
+        )
+
+        # Get student mobile number
+        cursor.execute(
+            "SELECT mobile, name FROM leave_requests WHERE id=?",
+            (leave_id,)
+        )
+        row = cursor.fetchone()
+        conn.commit()
+        conn.close()
+
+        if row:
+            mobile = row[0]
+            name = row[1]
+
+            # SMS Message
+            message = f"Hello {name}, your leave request has been {action}."
+
+            # Send SMS
+            send_sms(mobile, message)
+
+        return redirect(url_for("admin_dashboard"))
+
+    except Exception as e:
+        print("ERROR in leave_action:", e)
+        return "Something went wrong", 500
+
