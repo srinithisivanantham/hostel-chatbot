@@ -1,5 +1,5 @@
 # ---------- IMPORTS ----------
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 import sqlite3
 import os
 import requests
@@ -31,17 +31,19 @@ def send_sms(phone, message):
     }
 
     try:
-        response = requests.post(url, json=payload, headers=headers)
-        return response.json()
+        response = requests.post(url, json=payload, headers=headers, timeout=10)
+        print("SMS Response:", response.text)
+        return response.text
     except Exception as e:
         print("SMS Error:", e)
-        return {"error": "SMS Failed"}
+        return None
 
 # ---------- DATABASE SETUP ----------
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
+    # Students
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS students (
             register_no TEXT PRIMARY KEY,
@@ -62,6 +64,7 @@ def init_db():
             ("PKR003", "Madhu", "6369231372", "14"),
         ])
 
+    # Leave Applications
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS leave_applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,6 +78,7 @@ def init_db():
         )
     """)
 
+    # Complaints
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS complaints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -102,7 +106,7 @@ def chatbot():
     msg = request.args.get("msg", "").lower()
 
     if "hi" in msg or "hello" in msg or "hey" in msg:
-        return "Hello! Welcome to PKR Hostel 😊How can I help you?"
+        return "Hello! Welcome to PKR Hostel 😊 How can I help you?"
     elif "hostel rules" in msg or "rules" in msg:
         return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
     elif "mess menu" in msg or "menu" in msg:
@@ -212,7 +216,7 @@ def admin_logout():
     session.pop("admin_logged_in", None)
     return redirect("/admin")
 
-# ---------- LEAVE ACTION ----------
+# ---------- LEAVE ACTION (ACCEPT / REJECT / DONE) ----------
 @app.route("/leave_action/<int:leave_id>/<status>")
 def leave_action(leave_id, status):
     if not session.get("admin_logged_in"):
@@ -240,7 +244,7 @@ def leave_action(leave_id, status):
 
     return redirect("/admin/dashboard")
 
-# ---------- COMPLAINT ACTION ----------
+# ---------- COMPLAINT ACTION (MARK DONE) ----------
 @app.route("/complaint_action/<int:complaint_id>")
 def complaint_action(complaint_id):
     if not session.get("admin_logged_in"):
@@ -270,46 +274,4 @@ def complaint_action(complaint_id):
 
 # ---------- RUN ----------
 if __name__ == "__main__":
-    app.run(debug=True)
-    from flask import redirect, url_for
-
-# -------------------------------
-# ACTION BUTTON ROUTE (FIX)
-# -------------------------------
-@app.route("/leave_action/<int:leave_id>/<string:action>")
-def leave_action(leave_id, action):
-    try:
-        conn = sqlite3.connect("database.db")
-        cursor = conn.cursor()
-
-        # Update status in DB
-        cursor.execute(
-            "UPDATE leave_requests SET status=? WHERE id=?",
-            (action, leave_id)
-        )
-
-        # Get student mobile number
-        cursor.execute(
-            "SELECT mobile, name FROM leave_requests WHERE id=?",
-            (leave_id,)
-        )
-        row = cursor.fetchone()
-        conn.commit()
-        conn.close()
-
-        if row:
-            mobile = row[0]
-            name = row[1]
-
-            # SMS Message
-            message = f"Hello {name}, your leave request has been {action}."
-
-            # Send SMS
-            send_sms(mobile, message)
-
-        return redirect(url_for("admin_dashboard"))
-
-    except Exception as e:
-        print("ERROR in leave_action:", e)
-        return "Something went wrong", 500
-
+    app.run(host="0.0.0.0", port=5000, debug=False)
