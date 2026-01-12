@@ -244,8 +244,8 @@ def leave_action(leave_id, status):
 
     return redirect("/admin/dashboard")
 
-# ---------- COMPLAINT ACTION (MARK DONE) ----------
-@app.route("/complaint_action/<int:complaint_id>/markdone")
+# ---------- COMPLAINT ACTION ----------
+@app.route("/complaint_action/<int:complaint_id>")
 def complaint_action(complaint_id):
     if not session.get("admin_logged_in"):
         return redirect("/admin")
@@ -253,7 +253,10 @@ def complaint_action(complaint_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("UPDATE complaints SET status='Resolved' WHERE id=?", (complaint_id,))
+    cursor.execute(
+        "UPDATE complaints SET status='Resolved' WHERE id=?",
+        (complaint_id,)
+    )
 
     cursor.execute("""
         SELECT students.phone, students.name
@@ -261,8 +264,8 @@ def complaint_action(complaint_id):
         JOIN students ON complaints.register_no = students.register_no
         WHERE complaints.id=?
     """, (complaint_id,))
-    data = cursor.fetchone()
 
+    data = cursor.fetchone()
     conn.commit()
     conn.close()
 
@@ -271,7 +274,6 @@ def complaint_action(complaint_id):
         send_sms(phone, f"Hello {name}, your complaint has been resolved successfully.")
 
     return redirect("/admin/dashboard")
-
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
