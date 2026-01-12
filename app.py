@@ -1,33 +1,50 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+# ---------- IMPORTS ----------
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
+import os
 
+# ---------- FLASK APP ----------
 app = Flask(__name__)
-DB_NAME = "database.db"
+app.secret_key = "openonlyforme"
 
+# ---------- DATABASE PATH ----------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "hostel.db")
 
-# ---------------- DATABASE INIT ----------------
-
+# ---------- DATABASE SETUP ----------
 def init_db():
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Students table
+    # Student dummy table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS students (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            register_no TEXT PRIMARY KEY,
             name TEXT,
-            reg_no TEXT UNIQUE,
-            department TEXT,
-            year TEXT
+            phone TEXT,
+            room_no TEXT
         )
     """)
 
+    # Insert dummy students only once
+    cursor.execute("SELECT COUNT(*) FROM students")
+    count = cursor.fetchone()[0]
+    if count == 0:
+        cursor.executemany("""
+            INSERT INTO students VALUES (?, ?, ?, ?)
+        """, [
+            ("231cs048", "Srinithi", "9345518460", "12"),
+            ("231cs025", "Manisha", "9788618924", "13"),
+            ("PKR003", "Madhu", "6369231372", "14"),
+        ])
+
     # Leave table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS leaves (
+        CREATE TABLE IF NOT EXISTS leave_applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            register_no TEXT,
             name TEXT,
-            reg_no TEXT,
+            room_no TEXT,
             reason TEXT,
             from_date TEXT,
             to_date TEXT,
@@ -39,8 +56,9 @@ def init_db():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS complaints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            register_no TEXT,
             name TEXT,
-            reg_no TEXT,
+            room_no TEXT,
             complaint TEXT,
             status TEXT DEFAULT 'Pending'
         )
@@ -49,137 +67,136 @@ def init_db():
     conn.commit()
     conn.close()
 
-
 init_db()
 
-
-# ---------------- HOME ----------------
-
+# ---------- HOME ----------
 @app.route("/")
 def home():
     return render_template("index.html")
 
-
-# ---------------- STUDENT FETCH API ----------------
-
-@app.route("/get_student")
-def get_student():
-    reg_no = request.args.get("reg_no")
-
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT name, department, year FROM students WHERE reg_no=?", (reg_no,))
-    student = cursor.fetchone()
-
-    conn.close()
-
-    if student:
-        return jsonify({
-            "name": student[0],
-            "department": student[1],
-            "year": student[2]
-        })
-    else:
-        return jsonify({"error": "Student not found"})
-
-
-# ---------------- CHATBOT ----------------
-
+# ---------- CHATBOT ----------
 @app.route("/get")
 def chatbot():
-    user_msg = request.args.get("msg").lower()
+    msg = request.args.get("msg", "").lower()
 
-    if "leave" in user_msg:
-        return "Open leave form: <a href='/leave'>Click here</a>"
+    if "hi" in msg or "hello" in msg or "hey" in msg:
+        return "Hello! Welcome to PKR Hostel 😊 How can I help you?"
 
-    elif "complaint" in user_msg:
-        return "Open complaint form: <a href='/complaint'>Click here</a>"
+    elif "hostel rules" in msg or "rules" in msg:
+        return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
 
-    elif "admin" in user_msg:
-        return "Admin panel: <a href='/admin'>Click here</a>"
+    elif "mess menu" in msg or "menu" in msg:
+        return "Breakfast: Idli/Dosa<br>Lunch: Rice, Sambar<br>Dinner: Chapati"
+
+    elif "leave" in msg:
+        return "Apply for leave here: <a href='/leave'>Leave Form</a>"
+
+    elif "complaint" in msg:
+        return "Register complaint here: <a href='/complaint'>Complaint Form</a>"
+
+    elif "warden" in msg:
+        return "Warden Contact: +91-9876543210"
 
     else:
-        return "Hello! Type leave, complaint or admin."
+        return "Please ask about hostel rules, mess menu, leave, complaint or warden."
 
-
-# ---------------- LEAVE ----------------
-
+# ---------- LEAVE ----------
 @app.route("/leave")
-def leave():
+def leave_form():
     return render_template("leave.html")
-
 
 @app.route("/submit_leave", methods=["POST"])
 def submit_leave():
-    name = request.form["name"]
-    reg_no = request.form["reg_no"]
+    register_no = request.form["register_no"]
     reason = request.form["reason"]
     from_date = request.form["from_date"]
     to_date = request.form["to_date"]
 
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
+    # Fetch student details
+    cursor.execute("SELECT name, room_no FROM students WHERE register_no=?", (register_no,))
+    student = cursor.fetchone()
+
+    if not student:
+        conn.close()
+        return "❌ Invalid Register Number"
+
+    name, room_no = student
+
     cursor.execute("""
-        INSERT INTO leaves (name, reg_no, reason, from_date, to_date)
-        VALUES (?, ?, ?, ?, ?)
-    """, (name, reg_no, reason, from_date, to_date))
+        INSERT INTO leave_applications 
+        (register_no, name, room_no, reason, from_date, to_date)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (register_no, name, room_no, reason, from_date, to_date))
 
     conn.commit()
     conn.close()
+    return redirect("/")
 
-    return redirect(url_for("home"))
-
-
-# ---------------- COMPLAINT ----------------
-
+# ---------- COMPLAINT ----------
 @app.route("/complaint")
-def complaint():
+def complaint_form():
     return render_template("complaint.html")
-
 
 @app.route("/submit_complaint", methods=["POST"])
 def submit_complaint():
-    name = request.form["name"]
-    reg_no = request.form["reg_no"]
+    register_no = request.form["register_no"]
     complaint = request.form["complaint"]
 
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_PATH)     # ✅ FIXED HERE
     cursor = conn.cursor()
 
+    cursor.execute("SELECT name, room_no FROM students WHERE register_no=?", (register_no,))
+    student = cursor.fetchone()
+
+    if not student:
+        conn.close()
+        return "❌ Invalid Register Number"
+
+    name, room_no = student
+
     cursor.execute("""
-        INSERT INTO complaints (name, reg_no, complaint)
-        VALUES (?, ?, ?)
-    """, (name, reg_no, complaint))
+        INSERT INTO complaints 
+        (register_no, name, room_no, complaint)
+        VALUES (?, ?, ?, ?)
+    """, (register_no, name, room_no, complaint))
 
     conn.commit()
     conn.close()
+    return redirect("/")
 
-    return redirect(url_for("home"))
+# ---------- ADMIN ----------
+@app.route("/admin", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        if request.form["username"] == "admin" and request.form["password"] == "pkr@hostel@123":
+            session["admin_logged_in"] = True
+            return redirect("/admin/dashboard")
+        return render_template("admin_login.html", error="Invalid credentials")
+    return render_template("admin_login.html")
 
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    if not session.get("admin_logged_in"):
+        return redirect("/admin")
 
-# ---------------- ADMIN ----------------
-
-@app.route("/admin")
-def admin():
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM leaves")
+    cursor.execute("SELECT * FROM leave_applications")
     leaves = cursor.fetchall()
-
     cursor.execute("SELECT * FROM complaints")
     complaints = cursor.fetchall()
-
     conn.close()
 
-    return render_template("admin_dashboard.html",
-                           leaves=leaves,
-                           complaints=complaints)
+    return render_template("admin_dashboard.html", leaves=leaves, complaints=complaints)
 
+@app.route("/admin/logout")
+def admin_logout():
+    session.pop("admin_logged_in", None)
+    return redirect("/admin")
 
-# ---------------- RUN ----------------
-
+# ---------- RUN ----------
 if __name__ == "__main__":
     app.run(debug=True)
