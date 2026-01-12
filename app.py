@@ -15,28 +15,24 @@ DB_PATH = os.path.join(BASE_DIR, "hostel.db")
 # ---------- FAST2SMS CONFIG ----------
 FAST2SMS_API_KEY = "bQq8c6ZJs4hCi7DX92MfYj3BA1kTvpHmuOtdLGURzKxIgawoFlfrZwB0muX2kVlnDQSFpde5P6tL7oI3"
 
-# ---------- SMS FUNCTION ----------
 def send_sms(phone, message):
     url = "https://www.fast2sms.com/dev/bulkV2"
-    headers = {
+
+    params = {
         "authorization": FAST2SMS_API_KEY,
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "sender_id": "FSTSMS",
+        "route": "q",
         "message": message,
-        "language": "english",
-        "route": "v3",
-        "numbers": phone
+        "numbers": phone,
+        "flash": 0
     }
 
     try:
-        response = requests.post(url, json=payload, headers=headers, timeout=10)
+        response = requests.get(url, params=params, timeout=10)
         print("SMS Response:", response.text)
-        return response.text
+        return response.json()
     except Exception as e:
         print("SMS Error:", e)
-        return None
+        return {"error": str(e)}
 
 # ---------- DATABASE SETUP ----------
 def init_db():
