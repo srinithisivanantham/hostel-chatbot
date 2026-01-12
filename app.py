@@ -245,7 +245,7 @@ def leave_action(leave_id, status):
     return redirect("/admin/dashboard")
 
 # ---------- COMPLAINT ACTION (MARK DONE) ----------
-@app.route("/complaint_action/<int:complaint_id>")
+@app.route("/complaint_action/<int:complaint_id>/markdone")
 def complaint_action(complaint_id):
     if not session.get("admin_logged_in"):
         return redirect("/admin")
