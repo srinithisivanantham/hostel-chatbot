@@ -77,52 +77,60 @@ body {
     padding: 12px 18px;
     cursor: pointer;
 }
-/* ===============================
-   Leave & Complaint Form Styling
-   =============================== */
+/* ======================================
+   NAVY BLUE UI - Leave, Complaint, Admin
+   (Does NOT affect Admin Login Page)
+   ====================================== */
 
-form {
-    background: #e9f9f0;
-    border: 2px solid #28a745;
+/* Target only leave & complaint pages */
+body.leave-page form,
+body.complaint-page form {
+    background: #f1f5ff;
+    border: 2px solid #0b1f4b;
     border-radius: 12px;
     padding: 25px 30px;
     max-width: 480px;
     margin: 30px auto;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 12px rgba(11,31,75,0.2);
 }
 
-form h2, 
-form h3 {
+body.leave-page h2,
+body.complaint-page h2 {
     text-align: center;
-    color: #1e7e34;
+    color: #0b1f4b;
     margin-bottom: 20px;
 }
 
-/* Input fields */
-form input,
-form textarea,
-form select {
+/* Inputs */
+body.leave-page input,
+body.leave-page textarea,
+body.complaint-page input,
+body.complaint-page textarea {
     width: 100%;
     padding: 10px 12px;
     margin: 10px 0;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid #bbb;
     outline: none;
     font-size: 14px;
 }
 
-form input:focus,
-form textarea:focus {
-    border-color: #28a745;
-    box-shadow: 0 0 4px rgba(40,167,69,0.5);
+body.leave-page input:focus,
+body.leave-page textarea:focus,
+body.complaint-page input:focus,
+body.complaint-page textarea:focus {
+    border-color: #0b1f4b;
+    box-shadow: 0 0 5px rgba(11,31,75,0.5);
 }
 
-/* Submit Button */
-form button,
-form input[type="submit"] {
+/* Buttons */
+body.leave-page button,
+body.leave-page input[type="submit"],
+body.complaint-page button,
+body.complaint-page input[type="submit"] {
     width: 100%;
-    background-color: #28a745;
-    color: white;
+    background-color: #0b1f4b;
+    color: #fff;
     border: none;
     padding: 12px;
     margin-top: 15px;
@@ -132,16 +140,49 @@ form input[type="submit"] {
     transition: 0.3s ease;
 }
 
-form button:hover,
-form input[type="submit"]:hover {
-    background-color: #218838;
+body.leave-page button:hover,
+body.leave-page input[type="submit"]:hover,
+body.complaint-page button:hover,
+body.complaint-page input[type="submit"]:hover {
+    background-color: #142d6a;
 }
 
-/* Small screen support */
-@media (max-width: 600px) {
-    form {
-        margin: 15px;
-        padding: 20px;
-    }
+/* ==============================
+   Admin Dashboard Table Styling
+   ============================== */
+
+.dashboard-container table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #f4f7ff;
+}
+
+.dashboard-container th {
+    background-color: #0b1f4b;
+    color: white;
+    padding: 10px;
+}
+
+.dashboard-container td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.dashboard-container tr:hover {
+    background-color: #e1e9ff;
+}
+
+/* Action Buttons in Admin Dashboard */
+.dashboard-container a button {
+    background-color: #0b1f4b;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dashboard-container a button:hover {
+    background-color: #142d6a;
 }
 
