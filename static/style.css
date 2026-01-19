@@ -185,4 +185,80 @@ body.complaint-page input[type="submit"]:hover {
 .dashboard-container a button:hover {
     background-color: #142d6a;
 }
+/* ===============================
+   FORCE NAVY BOX FOR FORMS
+   Leave & Complaint Only
+   =============================== */
+
+.leave-page form,
+.complaint-page form {
+    background-color: #f4f7ff;
+    border: 3px solid #0b1f4b;
+    border-radius: 14px;
+    padding: 30px 35px;
+    max-width: 520px;
+    margin: 40px auto;
+    box-shadow: 0px 10px 18px rgba(11, 31, 75, 0.35);
+}
+
+.leave-page h2,
+.complaint-page h2 {
+    text-align: center;
+    color: #0b1f4b;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.leave-page label,
+.complaint-page label {
+    font-weight: bold;
+    color: #0b1f4b;
+}
+
+/* Inputs */
+.leave-page input,
+.leave-page textarea,
+.complaint-page input,
+.complaint-page textarea,
+.leave-page select,
+.complaint-page select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0 18px;
+    border-radius: 6px;
+    border: 1.5px solid #ccc;
+    font-size: 14px;
+}
+
+.leave-page input:focus,
+.leave-page textarea:focus,
+.complaint-page input:focus,
+.complaint-page textarea:focus {
+    border-color: #0b1f4b;
+    outline: none;
+    box-shadow: 0 0 6px rgba(11,31,75,0.6);
+}
+
+/* Submit Button */
+.leave-page button,
+.leave-page input[type="submit"],
+.complaint-page button,
+.complaint-page input[type="submit"] {
+    background-color: #0b1f4b;
+    color: white;
+    border: none;
+    padding: 13px;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.leave-page button:hover,
+.leave-page input[type="submit"]:hover,
+.complaint-page button:hover,
+.complaint-page input[type="submit"]:hover {
+    background-color: #142d6a;
+}
 
