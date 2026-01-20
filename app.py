@@ -1,5 +1,5 @@
 # ---------- IMPORTS ----------
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
 import os
 import requests
@@ -17,7 +17,6 @@ FAST2SMS_API_KEY = "bQq8c6ZJs4hCi7DX92MfYj3BA1kTvpHmuOtdLGURzKxIgawoFlfrZwB0muX2
 
 def send_sms(phone, message):
     url = "https://www.fast2sms.com/dev/bulkV2"
-
     params = {
         "authorization": FAST2SMS_API_KEY,
         "route": "q",
@@ -116,6 +115,28 @@ def chatbot():
     else:
         return "Please ask about hostel rules, mess menu, leave, complaint or warden."
 
+# ---------- FETCH STUDENT API ----------
+@app.route("/get_student/<register_no>")
+def get_student(register_no):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT name, phone, room_no FROM students WHERE register_no=?",
+        (register_no,)
+    )
+    row = cursor.fetchone()
+    conn.close()
+
+    if row:
+        return {
+            "name": row[0],
+            "phone": row[1],
+            "room": row[2]
+        }
+    else:
+        return {"error": "Student not found"}
+
 # ---------- LEAVE ----------
 @app.route("/leave")
 def leave_form():
@@ -212,7 +233,7 @@ def admin_logout():
     session.pop("admin_logged_in", None)
     return redirect("/admin")
 
-# ---------- LEAVE ACTION (ACCEPT / REJECT / DONE) ----------
+# ---------- LEAVE ACTION ----------
 @app.route("/leave_action/<int:leave_id>/<status>")
 def leave_action(leave_id, status):
     if not session.get("admin_logged_in"):
@@ -249,10 +270,7 @@ def complaint_action(complaint_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute(
-        "UPDATE complaints SET status='Resolved' WHERE id=?",
-        (complaint_id,)
-    )
+    cursor.execute("UPDATE complaints SET status='Resolved' WHERE id=?", (complaint_id,))
 
     cursor.execute("""
         SELECT students.phone, students.name
@@ -270,6 +288,7 @@ def complaint_action(complaint_id):
         send_sms(phone, f"Hello {name}, your complaint has been resolved successfully.")
 
     return redirect("/admin/dashboard")
+
 # ---------- RUN ----------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(debug=True)

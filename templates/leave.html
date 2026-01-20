@@ -1,39 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Leave Application</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Leave Form</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body class="leave-page">
 
-<header>Leave Application</header>
+<h2>Leave Application</h2>
 
-<div class="form-wrapper">
-    <form method="POST" action="/submit_leave">
+<form method="POST" action="/submit_leave">
 
-        <label>Register Number</label>
-        <input type="text" name="register_no" required>
+    <label>Register Number</label>
+    <input type="text" name="register_no" id="regno" required onblur="fetchStudent()">
 
-        <label>Student Name</label>
-        <input type="text" name="name" required>
+    <label>Student Name</label>
+    <input type="text" id="name" readonly>
 
-        <label>Mobile Number</label>
-        <input type="text" name="mobile" required>
+    <label>Phone Number</label>
+    <input type="text" id="phone" readonly>
 
-        <label>Reason for Leave</label>
-        <textarea name="reason" required></textarea>
+    <label>Reason</label>
+    <textarea name="reason" required></textarea>
 
-        <label>From Date</label>
-        <input type="date" name="from_date" required>
+    <label>From Date</label>
+    <input type="date" name="from_date" required>
 
-        <label>To Date</label>
-        <input type="date" name="to_date" required>
+    <label>To Date</label>
+    <input type="date" name="to_date" required>
 
-        <button type="submit">Submit Leave</button>
+    <input type="submit" value="Submit Leave">
 
-    </form>
-</div>
+</form>
+
+<script>
+function fetchStudent(){
+    let reg = document.getElementById("regno").value;
+
+    if(reg.trim() === "") return;
+
+    fetch("/get_student/" + reg)
+    .then(res => res.json())
+    .then(data => {
+        if(data.error){
+            alert("Invalid Register Number");
+            document.getElementById("name").value = "";
+            document.getElementById("phone").value = "";
+        } else {
+            document.getElementById("name").value = data.name;
+            document.getElementById("phone").value = data.phone;
+        }
+    });
+}
+</script>
 
 </body>
 </html>
