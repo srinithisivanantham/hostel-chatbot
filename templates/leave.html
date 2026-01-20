@@ -1,27 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Leave Form</title>
+    <title>Leave Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body class="leave-page">
-<h2>Leave Application</h2>
 
-<form action="/submit_leave" method="post">
+<header>Leave Application</header>
 
-    Register Number:
-    <input type="text" name="register_no" required><br><br>
+<div class="form-wrapper">
+    <form method="POST" action="/submit_leave">
 
-    Reason:
-    <input type="text" name="reason" required><br><br>
+        <label>Register Number</label>
+        <input type="text" name="register_no" required>
 
-    From Date:
-    <input type="date" name="from_date" required><br><br>
+        <label>Student Name</label>
+        <input type="text" name="name" required>
 
-    To Date:
-    <input type="date" name="to_date" required><br><br>
+        <label>Mobile Number</label>
+        <input type="text" name="mobile" required>
 
-    <button type="submit">Submit</button>
-</form>
+        <label>Reason for Leave</label>
+        <textarea name="reason" required></textarea>
+
+        <label>From Date</label>
+        <input type="date" name="from_date" required>
+
+        <label>To Date</label>
+        <input type="date" name="to_date" required>
+
+        <button type="submit">Submit Leave</button>
+
+    </form>
+</div>
 
 </body>
 </html>
