@@ -171,21 +171,25 @@ body.complaint-page input[type="submit"]:hover {
     border-collapse: collapse;
     width: 100%;
     background: #f4f7ff;
+    border: 2px solid #0f5132;
 }
 
 .dashboard-container th {
     background-color: #0b1f4b;
     color: white;
     padding: 10px;
+    border: 1px solid #0b3d2e;
+    text-align: center;
 }
 
 .dashboard-container td {
     padding: 10px;
-    border-bottom: 1px solid #ccc;
+    border: 1px solid #c1d6cc;   
+    text-align: center;
 }
 
 .dashboard-container tr:hover {
-    background-color: #e1e9ff;
+ background-color: #e3f2ec;
 }
 
 /* Action Buttons in Admin Dashboard */
