@@ -306,4 +306,9 @@ body.complaint-page input[type="submit"]:hover {
 .btn-blue:hover {
     opacity: 0.85;
 }
+.dashboard-container table,
+.dashboard-container th,
+.dashboard-container td {
+    border: 2px solid #0f5132 !important;
+}
 
