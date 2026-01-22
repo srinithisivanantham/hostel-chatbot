@@ -201,3 +201,105 @@ body.complaint-page input[type="submit"]:hover {
 .dashboard-container a button:hover {
     background-color: #142d6a;
 }
+/* ===========================
+   ADMIN DASHBOARD DARK GREEN
+   =========================== */
+
+.admin-page {
+    background: #e9f5ee;
+    font-family: Arial, sans-serif;
+}
+
+.admin-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px;
+}
+
+.admin-container h1 {
+    text-align: center;
+    color: #0f5132;
+    margin-bottom: 25px;
+}
+
+.logout-box {
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.logout-box a {
+    text-decoration: none;
+    background: #0f5132;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 12px rgba(0,0,0,0.2);
+}
+
+.card h2 {
+    color: #0f5132;
+    margin-bottom: 15px;
+}
+
+/* Tables */
+.admin-page table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-page th {
+    background: #0f5132;
+    color: white;
+    padding: 10px;
+}
+
+.admin-page td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.admin-page tr:hover {
+    background: #f1faf4;
+}
+
+/* Buttons */
+.btn-green {
+    background: #198754;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-red {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-blue {
+    background: #0f5132;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-green:hover,
+.btn-red:hover,
+.btn-blue:hover {
+    opacity: 0.85;
+}
+
