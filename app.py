@@ -104,8 +104,44 @@ def chatbot():
         return "Hello! Welcome to PKR Hostel 😊 How can I help you?"
     elif "hostel rules" in msg or "rules" in msg:
         return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
-    elif "mess menu" in msg or "menu" in msg:
-        return "Breakfast: Idli/Dosa<br>Lunch: Rice, Sambar<br>Dinner: Chapati"
+    elif "menu" in msg or "mess" in msg:
+        return """🍽️ <b>PKR Hostel Weekly Mess Menu</b><br><br>
+
+<b>Sunday</b><br>
+Morning: Poori / Bread<br>
+Lunch: Non-Veg – Chicken Biriyani | Veg – Sambar<br>
+Dinner: Sadham, Parupu Sambar, Rasam<br><br>
+
+<b>Monday</b><br>
+Morning: Idly<br>
+Lunch: Cabbage Poriyal, Rice, Vendaikai Sambar, Rasam, Curd<br>
+Dinner: Parupu Sadham, Idly Upma<br><br>
+
+<b>Tuesday</b><br>
+Morning: Patani Sadham, Potato Fry<br>
+Lunch: Parupu Sambar, Rice, Rasam, Curd<br>
+Dinner: Chapati<br><br>
+
+<b>Wednesday</b><br>
+Morning: Idly<br>
+Lunch: Egg Gravy, Rice, Rasam, Curd, Sorakai Poriyal<br>
+Dinner: Thakkali Sadham<br><br>
+
+<b>Thursday</b><br>
+Morning: Sambar Sadham, Appalam<br>
+Lunch: Beetroot Poriyal, Sundal Kulambu, Rice, Rasam, Curd<br>
+Dinner: Dosa<br><br>
+
+<b>Friday</b><br>
+Morning: Coconut Rice / Lemon Rice<br>
+Lunch: Pachai Payaru Kulambu, Rice, Rasam, Curd<br>
+Dinner: Idly<br><br>
+
+<b>Saturday</b><br>
+Morning: Thattai Payaru, Idly Upma<br>
+Lunch: Vazhakai Poriyal, Rice, Rasam, Curd, Parupu Sambar<br>
+Dinner: Dosa
+"""
     elif "leave" in msg:
         return "Apply for leave here: <a href='/leave'>Leave Form</a>"
     elif "complaint" in msg:
