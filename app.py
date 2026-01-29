@@ -103,7 +103,16 @@ def chatbot():
     if "hi" in msg or "hello" in msg or "hey" in msg:
         return "Hello! Welcome to PKR Hostel 😊 How can I help you?"
     elif "hostel rules" in msg or "rules" in msg:
-        return "• Entry before 9 PM<br>• Maintain silence<br>• No outsiders allowed"
+        return """
+    <b>📜 Hostel Rules:</b><br>
+    1️⃣ The hostel management is not responsible for missing jewellery or valuables.<br>
+    2️⃣ Students must be properly dressed until 10:00 PM.<br>
+    3️⃣ Students must go for dinner sharply at 8:00 PM.<br>
+    4️⃣ Snacks time is at 5:00 PM in the evening.<br>
+    5️⃣ Study time is from 6:00 PM to 8:00 PM.<br>
+    6️⃣ Mobile phones must be submitted at 10:00 PM and collected the next morning at 6:00 AM.<br>
+    7️⃣ Students must go to class sharply at 9:00 AM.
+    """
     elif "menu" in msg or "mess" in msg:
         return """🍽️ <b>PKR Hostel Weekly Mess Menu</b><br><br>
 
